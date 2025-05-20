@@ -1,12 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\AksesController;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\BookController;
-
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\BorrowingController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,14 +23,22 @@ Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/admin', [AksesController::class, 'index'])->name('admin')->middleware('role:admin');
-    Route::get('/user', [AksesController::class, 'user'])->middleware('role:user');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-    
-    // Admin Routes
-    Route::middleware('role:admin')->group(function () {
-        Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+
+    // User routes
+    Route::middleware('userAkses:user')->group(function () {
+        Route::get('/user', [AksesController::class, 'user'])->name('user');
+        Route::get('/user/books/{book}', [AksesController::class, 'showBook'])->name('books.show');
+        Route::post('/user/borrowings', [BorrowingController::class, 'store'])->name('borrowings.store');
+    });
+
+    // Admin routes
+    Route::middleware('userAkses:admin')->group(function () {
+        Route::get('/admin', [AksesController::class, 'index'])->name('admin');
         Route::resource('users', UserController::class);
+        Route::resource('categories', CategoryController::class);
         Route::resource('books', BookController::class);
+        Route::resource('borrowings', BorrowingController::class);
+        Route::post('borrowings/{borrowing}/return', [BorrowingController::class, 'return'])->name('borrowings.return');
     });
 });

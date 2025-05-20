@@ -10,6 +10,12 @@
                 </div>
 
                 <div class="card-body">
+                    @if (session('error'))
+                        <div class="alert alert-danger" role="alert">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
                     <form action="{{ route('books.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
@@ -88,6 +94,17 @@
                             <label for="cover_image" class="form-label">Sampul Buku</label>
                             <input type="file" class="form-control @error('cover_image') is-invalid @enderror" id="cover_image" name="cover_image" accept="image/*">
                             @error('cover_image')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-select @error('status') is-invalid @enderror" id="status" name="status" required>
+                                <option value="available" {{ old('status') == 'available' ? 'selected' : '' }}>Tersedia</option>
+                                <option value="unavailable" {{ old('status') == 'unavailable' ? 'selected' : '' }}>Tidak Tersedia</option>
+                            </select>
+                            @error('status')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>

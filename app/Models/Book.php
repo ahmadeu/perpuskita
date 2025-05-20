@@ -22,14 +22,14 @@ class Book extends Model
         'status'
     ];
 
+    protected $casts = [
+        'publish_year' => 'integer',
+        'quantity' => 'integer'
+    ];
+
     public function category()
     {
         return $this->belongsTo(Category::class);
-    }
-
-    public function borrows()
-    {
-        return $this->hasMany(Borrow::class);
     }
 
     public function isAvailable()

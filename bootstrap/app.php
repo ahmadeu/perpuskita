@@ -12,9 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // $middleware->alias([
-        //     'userAkses' => UserAkses::class,
-        // ]);
+        $middleware->alias([
+            'userAkses' => UserAkses::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

@@ -10,7 +10,13 @@
                 </div>
 
                 <div class="card-body">
-                    <form action="{{ route('books.update', $book) }}" method="POST" enctype="multipart/form-data">
+                    @if (session('error'))
+                        <div class="alert alert-danger" role="alert">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
+                    <form action="{{ route('books.update', $book->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
 
@@ -93,6 +99,7 @@
                                 </div>
                             @endif
                             <input type="file" class="form-control @error('cover_image') is-invalid @enderror" id="cover_image" name="cover_image" accept="image/*">
+                            <small class="text-muted">Biarkan kosong jika tidak ingin mengubah gambar</small>
                             @error('cover_image')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

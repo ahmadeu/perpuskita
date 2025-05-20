@@ -79,10 +79,10 @@
 <body>
     <div id="app">
         <!-- Navbar -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-white">
+        <nav class="navbar navbar-expand-xl navbar-light bg-white">
             <div class="container">
                 <!-- Brand -->
-                <a class="navbar-brand text-primary" href="{{ route('welcome') }}">
+                <a class="navbar-brand text-primary" href="#">
                     <i class="fas fa-book-reader me-2"></i> Perpustakaan UMKU
                 </a>
 
@@ -109,6 +109,16 @@
                                 <li class="nav-item">
                                     <a class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}" href="{{ route('users.index') }}">
                                         <i class="fas fa-users"></i> User
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('categories.*') ? 'active' : '' }}" href="{{ route('categories.index') }}">
+                                        <i class="fas fa-tags"></i> Kategori
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('borrowings.*') ? 'active' : '' }}" href="{{ route('borrowings.index') }}">
+                                        <i class="fas fa-book-reader"></i> Peminjaman
                                     </a>
                                 </li>
                             @endif
@@ -157,11 +167,29 @@
                         </a>
                     </div>
                 @endif
+                @if(session('success'))
+                    <div class="container">
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    </div>
+                @endif
+
+                @if(session('error'))
+                    <div class="container">
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    </div>
+                @endif
                 @yield('content')
             </div>
         </main>
 
         <!-- Footer -->
+        @guest
         <footer class="bg-primary text-white text-center py-5">
             <div class="container">
                 <div class="row text-start">
@@ -191,6 +219,7 @@
                 <p>&copy; {{ date('Y') }} Perpustakaan UMKU. All rights reserved.</p>
             </div>
         </footer>
+        @endguest
     </div>
 
     <!-- Scripts -->

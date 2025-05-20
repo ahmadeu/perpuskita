@@ -72,6 +72,13 @@
 @section('content')
 <div class="container mt-4">
     <div class="row justify-content-center">
+        @if(request()->routeIs('login'))
+                <div class="mb-3">
+                    <a href="{{ route('welcome') }}" class="btn btn-primary">
+                        <i class="fas fa-arrow-left me-2"></i>Kembali ke Dashboard
+                    </a>
+                </div>
+            @endif
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
