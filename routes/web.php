@@ -28,7 +28,7 @@ Route::middleware(['auth'])->group(function () {
     // User routes
     Route::middleware('userAkses:user')->group(function () {
         Route::get('/user', [AksesController::class, 'user'])->name('user');
-        Route::get('/user/books/{book}', [AksesController::class, 'showBook'])->name('books.show');
+        Route::get('/user/books/{book}', [AksesController::class, 'showBook'])->name('user.books.show');
         Route::post('/user/borrowings', [BorrowingController::class, 'store'])->name('borrowings.store');
     });
 

@@ -121,6 +121,11 @@
                                         <i class="fas fa-book-reader"></i> Peminjaman
                                     </a>
                                 </li>
+                            @else
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('user') ? 'active' : '' }}" href="{{ route('user') }}"> Peminjaman
+                                    </a>
+                                </li>
                             @endif
                         @endauth
                     </ul>

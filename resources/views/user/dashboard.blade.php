@@ -10,19 +10,22 @@
         </form>
     </div>
 
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 m-2">
         @forelse($books as $book)
             <div class="col">
-                <a href="{{ route('books.show', $book->id) }}" class="text-decoration-none">
-                    <div class="card h-100">
-                        <img src="{{ $book->cover_url ?? 'https://via.placeholder.com/300x400' }}" class="card-img-top" alt="{{ $book->title }}">
-                        <div class="card-body">
-                            <h5 class="card-title text-dark">{{ $book->title }}</h5>
-                            <p class="card-text text-muted">Penulis: {{ $book->author }}</p>
-                            <p class="card-text">{{ Str::limit($book->description, 100) }}</p>
+                <a href="{{ route('user.books.show', $book->id) }}" class="text-decoration-none">
+                    <div class="card h-100 book-card">
+                        @if($book->cover_image)
+                            <img src="{{ asset('storage/' . $book->cover_image) }}" class="card-img" alt="{{ $book->title }}">
+                        @else
+                            <img src="https://via.placeholder.com/300x400" class="card-img" alt="{{ $book->title }}">
+                        @endif
+                        <div class="card-img-overlay d-flex flex-column justify-content-end">
+                            <h5 class="card-title text-white">{{ $book->title }}</h5>
+                            <p class="card-text text-white-50">Penulis: {{ $book->author }}</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="badge bg-primary">{{ $book->category->name }}</span>
-                                <small class="text-muted">Tersedia: {{ $book->stock }}</small>
+                                <small class="text-white-50">Tersedia: {{ $book->quantity }}</small>
                             </div>
                         </div>
                     </div>
@@ -37,24 +40,32 @@
         @endforelse
     </div>
 
-    <div class="d-flex justify-content-center mt-4">
+    {{-- <div class="d-flex justify-content-center mt-4">
         {{ $books->links() }}
-    </div>
+    </div> --}}
 </div>
 
 <style>
-    .card {
+    .book-card {
         transition: transform 0.3s ease;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
     }
     
-    .card:hover {
+    .book-card:hover {
         transform: translateY(-5px);
     }
     
-    .card-img-top {
-        height: 200px;
+    .card-img {
+        height: 300px;
         object-fit: cover;
+        filter: brightness(0.7);
+    }
+    
+    .card-img-overlay {
+        background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+        padding: 1.25rem;
     }
     
     .badge {
