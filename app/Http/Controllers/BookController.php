@@ -16,10 +16,8 @@ class BookController extends Controller
      */
     public function index()
     {
-        $books = Book::with('category')->paginate(12);
-        $categories = Category::all();
-        
-        return view('books.index', compact('books', 'categories'));
+        $books = Book::with('category')->latest()->paginate(10);
+        return view('admin.books.index', compact('books'));
     }
 
     /**
@@ -55,7 +53,7 @@ class BookController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('books.create', compact('categories'));
+        return view('admin.books.create', compact('categories'));
     }
 
     /**
@@ -66,26 +64,29 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'title' => 'required|string|max:255',
+            'isbn' => 'nullable|string|max:20',
             'author' => 'required|string|max:255',
             'publisher' => 'nullable|string|max:255',
-            'year' => 'nullable|integer|min:1900|max:' . date('Y'),
-            'isbn' => 'nullable|string|max:20',
+            'publish_year' => 'nullable|integer|min:1900|max:' . date('Y'),
             'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string',
-            'quantity' => 'required|integer|min:0',
+            'quantity' => 'required|integer|min:1',
             'cover_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'status' => 'required|in:available,unavailable'
         ]);
-        
+
+        $data = $request->all();
+
         if ($request->hasFile('cover_image')) {
-            $validated['cover_image'] = $request->file('cover_image')->store('book-covers', 'public');
+            $data['cover_image'] = $request->file('cover_image')->store('book-covers', 'public');
         }
-        
-        $book = Book::create($validated);
-        
-        return redirect()->route('books.show', $book)
-                         ->with('success', 'Buku berhasil ditambahkan!');
+
+        Book::create($data);
+
+        return redirect()->route('books.index')
+            ->with('success', 'Buku berhasil ditambahkan');
     }
 
     /**
@@ -116,7 +117,7 @@ class BookController extends Controller
     public function edit(Book $book)
     {
         $categories = Category::all();
-        return view('books.edit', compact('book', 'categories'));
+        return view('admin.books.edit', compact('book', 'categories'));
     }
 
     /**
@@ -128,31 +129,33 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
-        $validated = $request->validate([
+        $request->validate([
             'title' => 'required|string|max:255',
+            'isbn' => 'nullable|string|max:20',
             'author' => 'required|string|max:255',
             'publisher' => 'nullable|string|max:255',
-            'year' => 'nullable|integer|min:1900|max:' . date('Y'),
-            'isbn' => 'nullable|string|max:20',
+            'publish_year' => 'nullable|integer|min:1900|max:' . date('Y'),
             'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string',
-            'quantity' => 'required|integer|min:0',
+            'quantity' => 'required|integer|min:1',
             'cover_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'status' => 'required|in:available,unavailable'
         ]);
-        
+
+        $data = $request->all();
+
         if ($request->hasFile('cover_image')) {
             // Delete old image if exists
             if ($book->cover_image) {
                 Storage::disk('public')->delete($book->cover_image);
             }
-            
-            $validated['cover_image'] = $request->file('cover_image')->store('book-covers', 'public');
+            $data['cover_image'] = $request->file('cover_image')->store('book-covers', 'public');
         }
-        
-        $book->update($validated);
-        
-        return redirect()->route('books.show', $book)
-                         ->with('success', 'Buku berhasil diupdate!');
+
+        $book->update($data);
+
+        return redirect()->route('books.index')
+            ->with('success', 'Buku berhasil diperbarui');
     }
 
     /**
@@ -167,10 +170,10 @@ class BookController extends Controller
         if ($book->cover_image) {
             Storage::disk('public')->delete($book->cover_image);
         }
-        
+
         $book->delete();
-        
+
         return redirect()->route('books.index')
-                         ->with('success', 'Buku berhasil dihapus!');
+            ->with('success', 'Buku berhasil dihapus');
     }
 }

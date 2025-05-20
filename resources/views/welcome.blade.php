@@ -78,19 +78,16 @@
     <div class="container">
         <h1 class="display-4 fw-bold mb-4">Perpustakaan Universitas Muhammadiyah Kudus</h1>
         <p class="lead mb-5">Rumah bagi jiwa-jiwa yang haus akan pengetahuan. Di antara rak buku yang menjulang, tersembunyi untaian hikmah yang siap dipetik</p>
-        @guest
             <div class="mt-4">
                 <a href="{{ route('dashboard') }}" class="btn btn-primary btn-lg me-3">
                     <i class="fas fa-sign-in-alt me-2"></i> Go To Dashboard
                 </a>
             </div>
-        @else
             <div class="mt-4">
-                <a href="{{ route('dashboard') }}" class="btn btn-primary btn-lg">
-                    <i class="fas fa-tachometer-alt me-2"></i> Go to Dashboard
+                <a href="{{ route('login') }}" class="btn btn-primary btn-lg me-3">
+                    <i class="fas fa-sign-in-alt me-2"></i> Login
                 </a>
             </div>
-        @endguest
     </div>
 </section>
 
@@ -167,7 +164,7 @@
     <div class="container">
         <h2 class="text-center mb-5">Recent Books</h2>
         <div class="row g-4">
-            @foreach($recentBooks as $book)
+            {{-- @foreach($recentBooks as $book)
             <div class="col-md-4 col-lg-2">
                 <div class="card book-card">
                     @if($book->cover_image)
@@ -183,7 +180,7 @@
                     </div>
                 </div>
             </div>
-            @endforeach
+            @endforeach --}}
         </div>
     </div>
 </section>
@@ -193,7 +190,7 @@
     <div class="container">
         <h2 class="text-center mb-5">Book Categories</h2>
         <div class="row g-4">
-            @foreach($categories as $category)
+            {{-- @foreach($categories as $category)
             <div class="col-6 col-md-4 col-lg-3">
                 <div class="card feature-card h-100">
                     <div class="card-body text-center">
@@ -202,7 +199,7 @@
                     </div>
                 </div>
             </div>
-            @endforeach
+            @endforeach --}}
         </div>
     </div>
 </section>
@@ -262,11 +259,7 @@
     <div class="container text-center">
         <h2 class="mb-4">Ready to streamline your library management?</h2>
         <p class="lead mb-5">Start managing your library efficiently with our comprehensive system</p>
-        @guest
-            <a href="{{ route('dashboard') }}" class="btn btn-light btn-lg">Get Started Today</a>
-        @else
-            <a href="{{ route('dashboard') }}" class="btn btn-light btn-lg">Go to Dashboard</a>
-        @endguest
+            <a href="{{ route('login') }}" class="btn btn-light btn-lg">Get Started Today</a>
     </div>
 </section>
 @endsection

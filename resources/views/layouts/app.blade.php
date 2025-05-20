@@ -14,16 +14,17 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Custom CSS Inline -->
+    <!-- Custom CSS -->
     <style>
+        /* Base Styles */
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #f9fafb;
         }
 
+        /* Navbar Styles */
         .navbar {
-            padding-top: 1rem;
-            padding-bottom: 1rem;
+            padding: 1rem 0;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
@@ -36,6 +37,7 @@
             font-weight: 500;
         }
 
+        /* Button Styles */
         .btn-search {
             background-color: #f59e0b;
             border: none;
@@ -50,6 +52,7 @@
             background-color: #d97706;
         }
 
+        /* Form Styles */
         .input-search {
             border-radius: 12px;
             padding: 0.75rem 1rem;
@@ -57,6 +60,7 @@
             width: 100%;
         }
 
+        /* Footer Styles */
         footer {
             margin-top: 60px;
         }
@@ -77,9 +81,12 @@
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg navbar-light bg-white">
             <div class="container">
-                <a class="navbar-brand text-primary" href="{{ url('/') }}">
+                <!-- Brand -->
+                <a class="navbar-brand text-primary" href="{{ route('welcome') }}">
                     <i class="fas fa-book-reader me-2"></i> Perpustakaan UMKU
                 </a>
+
+                <!-- Toggle Button -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -88,44 +95,54 @@
                     <!-- Left Side -->
                     <ul class="navbar-nav me-auto">
                         @auth
-                            <li class="nav-item"><a class="nav-link" href="{{ route('dashboard') }}"><i class="fas fa-tachometer-alt me-1"></i> Dashboard</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ route('books.index') }}"><i class="fas fa-book me-1"></i> Buku</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ route('members.index') }}"><i class="fas fa-users me-1"></i> Anggota</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ route('categories.index') }}"><i class="fas fa-tags me-1"></i> Kategori</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ route('borrows.index') }}"><i class="fas fa-exchange-alt me-1"></i> Peminjaman</a></li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                                    <i class="fas fa-chart-bar me-1"></i> Laporan
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ route('reports.borrows') }}">Laporan Peminjaman</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('reports.overdue') }}">Laporan Terlambat</a></li>
-                                </ul>
-                            </li>
+                            @if(auth()->user()->role === 'admin')
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('admin') ? 'active' : '' }}" href="{{ route('admin') }}">
+                                        <i class="fas fa-home"></i> Home
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('books.*') ? 'active' : '' }}" href="{{ route('books.index') }}">
+                                        <i class="fas fa-book"></i> Buku
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}" href="{{ route('users.index') }}">
+                                        <i class="fas fa-users"></i> User
+                                    </a>
+                                </li>
+                            @endif
                         @endauth
                     </ul>
 
                     <!-- Right Side -->
                     <ul class="navbar-nav">
-                        @guest
-                        
-                        @else
+                        @auth
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                                    <i class="fas fa-user me-1"></i> {{ Auth::user()->name }}
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-person-circle"></i> {{ auth()->user()->name }}
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
-                                        <a class="dropdown-item" href="{{ route('logout') }}"
-                                           onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                           <i class="fas fa-sign-out-alt me-1"></i> Logout
-                                        </a>
-                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
+                                        <form action="{{ route('logout') }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="bi bi-box-arrow-right"></i> Logout
+                                            </button>
+                                        </form>
                                     </li>
                                 </ul>
                             </li>
+                        @endauth
+                        @guest
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('login') }}">
+                                <i class="fas fa-sign-in-alt"></i> Login
+                            </a>
+                        </li>
                         @endguest
                     </ul>
+                    
                 </div>
             </div>
         </nav>
@@ -133,6 +150,13 @@
         <!-- Main Content -->
         <main class="py-4">
             <div class="container">
+                @if(request()->routeIs('dashboard'))
+                    <div class="mb-3">
+                        <a href="{{ route('welcome') }}" class="btn btn-primary">
+                            <i class="fas fa-arrow-left me-2"></i>Kembali ke Dashboard
+                        </a>
+                    </div>
+                @endif
                 @yield('content')
             </div>
         </main>
