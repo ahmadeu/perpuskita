@@ -10,86 +10,62 @@
         </form>
     </div>
 
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-        <!-- Card Buku 1 -->
-        <div class="col">
-            <div class="card h-100">
-                <img src="https://via.placeholder.com/300x400" class="card-img-top" alt="Cover Buku">
-                <div class="card-body">
-                    <h5 class="card-title">Pemrograman Web</h5>
-                    <p class="card-text text-muted">Penulis: John Doe</p>
-                    <p class="card-text">Buku tentang dasar-dasar pemrograman web modern.</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="badge bg-primary">Teknologi</span>
-                        <small class="text-muted">Tersedia: 5</small>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 m-2">
+        @forelse($books as $book)
+            <div class="col">
+                <a href="{{ route('guest.books.show', $book->id) }}" class="text-decoration-none">
+                    <div class="card h-100 book-card">
+                        @if($book->cover_image)
+                            <img src="{{ asset('storage/' . $book->cover_image) }}" class="card-img" alt="{{ $book->title }}">
+                        @else
+                            <img src="https://via.placeholder.com/300x400" class="card-img" alt="{{ $book->title }}">
+                        @endif
+                        <div class="card-img-overlay d-flex flex-column justify-content-end">
+                            <h5 class="card-title text-white">{{ $book->title }}</h5>
+                            <p class="card-text text-white-50">Penulis: {{ $book->author }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-primary">{{ $book->category->name }}</span>
+                                <small class="text-white-50">Tersedia: {{ $book->quantity }}</small>
+                            </div>
+                        </div>
                     </div>
+                </a>
+            </div>
+        @empty
+            <div class="col-12">
+                <div class="alert alert-info">
+                    Tidak ada buku yang tersedia.
                 </div>
             </div>
-        </div>
-
-        <!-- Card Buku 2 -->
-        <div class="col">
-            <div class="card h-100">
-                <img src="https://via.placeholder.com/300x400" class="card-img-top" alt="Cover Buku">
-                <div class="card-body">
-                    <h5 class="card-title">Database Management</h5>
-                    <p class="card-text text-muted">Penulis: Jane Smith</p>
-                    <p class="card-text">Panduan lengkap tentang manajemen database.</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="badge bg-success">Database</span>
-                        <small class="text-muted">Tersedia: 3</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card Buku 3 -->
-        <div class="col">
-            <div class="card h-100">
-                <img src="https://via.placeholder.com/300x400" class="card-img-top" alt="Cover Buku">
-                <div class="card-body">
-                    <h5 class="card-title">Algoritma & Struktur Data</h5>
-                    <p class="card-text text-muted">Penulis: Robert Johnson</p>
-                    <p class="card-text">Konsep dasar algoritma dan struktur data.</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="badge bg-info">Komputer</span>
-                        <small class="text-muted">Tersedia: 7</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card Buku 4 -->
-        <div class="col">
-            <div class="card h-100">
-                <img src="https://via.placeholder.com/300x400" class="card-img-top" alt="Cover Buku">
-                <div class="card-body">
-                    <h5 class="card-title">Machine Learning</h5>
-                    <p class="card-text text-muted">Penulis: Sarah Williams</p>
-                    <p class="card-text">Pengantar machine learning untuk pemula.</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="badge bg-warning">AI</span>
-                        <small class="text-muted">Tersedia: 2</small>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @endforelse
     </div>
+
+    {{-- <div class="d-flex justify-content-center mt-4">
+        {{ $books->links() }}
+    </div> --}}
 </div>
 
 <style>
-    .card {
+    .book-card {
         transition: transform 0.3s ease;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
     }
     
-    .card:hover {
+    .book-card:hover {
         transform: translateY(-5px);
     }
     
-    .card-img-top {
-        height: 200px;
+    .card-img {
+        height: 300px;
         object-fit: cover;
+        filter: brightness(0.7);
+    }
+    
+    .card-img-overlay {
+        background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+        padding: 1.25rem;
     }
     
     .badge {

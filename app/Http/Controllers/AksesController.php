@@ -32,12 +32,26 @@ class AksesController extends Controller
     }
     function guest()
     {
-        return view('guest.dashboard');
+        $books = Book::with('category')
+            ->when(request('search'), function($query) {
+                $query->where('title', 'like', '%' . request('search') . '%')
+                    ->orWhere('author', 'like', '%' . request('search') . '%')
+                    ->orWhere('description', 'like', '%' . request('search') . '%');
+            })
+            ->latest()
+            ->paginate(12);
+            
+        return view('guest.dashboard', compact('books'));
     }
 
     public function showBook(Book $book)
     {
         
         return view('user.book-detail', compact('book'));
+    }
+
+    public function showGuestBook(Book $book)
+    {
+        return view('guest.book-detail', compact('book'));
     }
 }

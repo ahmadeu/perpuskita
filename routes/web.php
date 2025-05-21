@@ -15,6 +15,7 @@ use App\Http\Controllers\DashboardController;
 |--------------------------------------------------------------------------
 */
 Route::get('/', [DashboardController::class, 'welcome'])->name('welcome');
+Route::get('/guest/books/{book}', [AksesController::class, 'showGuestBook'])->name('guest.books.show');
 
 Route::get('/dashboard', [AksesController::class, 'guest'])->name('dashboard');
 // Halaman landing page
@@ -42,3 +43,5 @@ Route::middleware(['auth'])->group(function () {
         Route::post('borrowings/{borrowing}/return', [BorrowingController::class, 'return'])->name('borrowings.return');
     });
 });
+
+// Guest routes
