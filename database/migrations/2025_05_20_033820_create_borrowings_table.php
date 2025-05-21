@@ -12,11 +12,13 @@ class CreateBorrowingsTable extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('book_id')->constrained()->onDelete('cascade');
-            $table->date('borrow_date');
-            $table->date('due_date');
+            $table->date('request_date');
+            $table->date('borrow_date')->nullable();
+            $table->date('due_date')->nullable();
             $table->date('return_date')->nullable();
-            $table->enum('status', ['borrowed', 'returned', 'overdue'])->default('borrowed');
+            $table->enum('status', ['pending', 'approved', 'borrowed', 'returned', 'rejected', 'overdue'])->default('pending');
             $table->text('notes')->nullable();
+            $table->text('user_notes')->nullable();
             $table->timestamps();
         });
     }

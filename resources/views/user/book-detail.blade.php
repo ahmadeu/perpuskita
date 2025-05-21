@@ -64,13 +64,9 @@
                         </a>
                         
                         @if($book->quantity > 0)
-                            <form action="{{ route('borrowings.store') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="book_id" value="{{ $book->id }}">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-book-reader"></i> Pinjam Buku
-                                </button>
-                            </form>
+                            <a href="{{ route('borrowings.create', $book) }}" class="btn btn-primary">
+                                <i class="fas fa-book-reader"></i> Pinjam Buku
+                            </a>
                         @else
                             <div class="alert alert-warning mb-0">
                                 <i class="fas fa-exclamation-circle"></i> Maaf, buku ini sedang tidak tersedia untuk dipinjam.

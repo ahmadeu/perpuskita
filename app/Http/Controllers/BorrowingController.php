@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Borrowing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class BorrowingController extends Controller
 {
@@ -18,45 +19,60 @@ class BorrowingController extends Controller
         return view('admin.borrowings.index', compact('borrowings'));
     }
 
-    public function create()
+    public function create(Book $book)
     {
-        $books = Book::where('status', 'available')->get();
-        $users = User::where('role', 'user')->get();
-        return view('admin.borrowings.create', compact('books', 'users'));
+        // Cek apakah user sudah meminjam buku yang sama dan belum dikembalikan
+        $existingBorrowing = Borrowing::where('user_id', Auth::id())
+            ->where('book_id', $book->id)
+            ->whereIn('status', ['pending', 'approved', 'borrowed'])
+            ->first();
+
+        if ($existingBorrowing) {
+            return redirect()->back()->with('error', 'Anda sudah mengajukan peminjaman buku ini sebelumnya.');
+        }
+
+        // Cek stok buku
+        if ($book->quantity <= 0) {
+            return redirect()->back()->with('error', 'Maaf, buku ini sedang tidak tersedia.');
+        }
+
+        return view('user.borrow-form', compact('book'));
     }
 
     public function store(Request $request)
     {
-        try {
-            $validated = $request->validate([
-                'user_id' => 'required|exists:users,id',
-                'book_id' => 'required|exists:books,id',
-                'borrow_date' => 'required|date',
-                'due_date' => 'required|date|after:borrow_date',
-                'notes' => 'nullable|string'
-            ]);
+        $request->validate([
+            'book_id' => 'required|exists:books,id',
+            'user_notes' => 'nullable|string|max:500'
+        ]);
 
-            $validated['status'] = 'borrowed';
+        $book = Book::findOrFail($request->book_id);
 
-            $book = Book::findOrFail($validated['book_id']);
-            if ($book->status !== 'available') {
-                return back()->with('error', 'Buku tidak tersedia untuk dipinjam');
-            }
-
-            $borrowing = Borrowing::create($validated);
-            
-            // Update status buku
-            $book->update(['status' => 'unavailable']);
-
-            return redirect()->route('borrowings.index')
-                ->with('success', 'Peminjaman berhasil dibuat');
-        } catch (\Exception $e) {
-            Log::error('Error saat membuat peminjaman:', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            return back()->with('error', 'Terjadi kesalahan saat membuat peminjaman: ' . $e->getMessage());
+        // Cek stok buku
+        if ($book->quantity <= 0) {
+            return redirect()->back()->with('error', 'Maaf, buku ini sedang tidak tersedia.');
         }
+
+        // Cek apakah user sudah meminjam buku yang sama
+        $existingBorrowing = Borrowing::where('user_id', Auth::id())
+            ->where('book_id', $request->book_id)
+            ->whereIn('status', ['pending', 'approved', 'borrowed'])
+            ->first();
+
+        if ($existingBorrowing) {
+            return redirect()->back()->with('error', 'Anda sudah mengajukan peminjaman buku ini sebelumnya.');
+        }
+
+        // Buat peminjaman baru
+        Borrowing::create([
+            'user_id' => Auth::id(),
+            'book_id' => $request->book_id,
+            'request_date' => now(),
+            'user_notes' => $request->user_notes,
+            'status' => 'pending'
+        ]);
+
+        return redirect()->route('user.borrowings')->with('success', 'Pengajuan peminjaman berhasil dikirim. Silakan tunggu persetujuan dari admin.');
     }
 
     public function edit(Borrowing $borrowing)
@@ -70,24 +86,22 @@ class BorrowingController extends Controller
     {
         try {
             $validated = $request->validate([
-                'user_id' => 'required|exists:users,id',
-                'book_id' => 'required|exists:books,id',
                 'borrow_date' => 'required|date',
                 'due_date' => 'required|date|after:borrow_date',
                 'return_date' => 'nullable|date|after:borrow_date',
-                'status' => 'required|in:borrowed,returned,overdue',
+                'status' => 'required|in:pending,approved,borrowed,returned,rejected,overdue',
                 'notes' => 'nullable|string'
             ]);
 
-            // Jika buku diubah
-            if ($borrowing->book_id !== $validated['book_id']) {
-                // Kembalikan status buku lama
-                $oldBook = Book::find($borrowing->book_id);
-                $oldBook->update(['status' => 'available']);
-
-                // Update status buku baru
-                $newBook = Book::find($validated['book_id']);
-                $newBook->update(['status' => 'unavailable']);
+            // Update status buku jika diperlukan
+            if ($validated['status'] === 'approved' || $validated['status'] === 'borrowed') {
+                $book = $borrowing->book;
+                $book->quantity = max(0, $book->quantity - 1);
+                $book->save();
+            } elseif ($validated['status'] === 'returned' || $validated['status'] === 'rejected') {
+                $book = $borrowing->book;
+                $book->quantity += 1;
+                $book->save();
             }
 
             $borrowing->update($validated);
@@ -106,9 +120,12 @@ class BorrowingController extends Controller
     public function destroy(Borrowing $borrowing)
     {
         try {
-            // Kembalikan status buku
-            $book = Book::find($borrowing->book_id);
-            $book->update(['status' => 'available']);
+            // Kembalikan status buku jika masih dipinjam
+            if ($borrowing->status === 'borrowed') {
+                $book = $borrowing->book;
+                $book->quantity += 1;
+                $book->save();
+            }
 
             $borrowing->delete();
             return redirect()->route('borrowings.index')
@@ -122,30 +139,23 @@ class BorrowingController extends Controller
         }
     }
 
-    public function return(Borrowing $borrowing)
+    public function indexUser()
     {
-        try {
-            if ($borrowing->status === 'returned') {
-                return back()->with('error', 'Buku sudah dikembalikan');
-            }
+        $borrowings = Borrowing::where('user_id', Auth::id())
+            ->with(['book'])
+            ->latest()
+            ->paginate(10);
 
-            $borrowing->update([
-                'return_date' => now(),
-                'status' => 'returned'
-            ]);
+        return view('user.borrowings', compact('borrowings'));
+    }
 
-            // Update status buku
-            $book = Book::find($borrowing->book_id);
-            $book->update(['status' => 'available']);
-
-            return redirect()->route('borrowings.index')
-                ->with('success', 'Buku berhasil dikembalikan');
-        } catch (\Exception $e) {
-            Log::error('Error saat mengembalikan buku:', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            return back()->with('error', 'Terjadi kesalahan saat mengembalikan buku: ' . $e->getMessage());
+    public function show(Borrowing $borrowing)
+    {
+        // Pastikan user hanya bisa melihat peminjaman miliknya
+        if ($borrowing->user_id !== Auth::id()) {
+            abort(403);
         }
+
+        return view('user.borrowing-detail', compact('borrowing'));
     }
 }
