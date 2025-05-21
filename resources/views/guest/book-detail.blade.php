@@ -56,6 +56,9 @@
                     <div class="mb-4">
                         <p class="text-muted mb-2">Deskripsi</p>
                         <p class="text-justify">{{ $book->description }}</p>
+                        <div class="alert alert-info mb-0 me-3">
+                            <i class="fas fa-info-circle"></i> Silakan login untuk meminjam buku ini.
+                        </div>
                     </div>
                     
                     <div class="d-flex justify-content-between align-items-center">
@@ -64,9 +67,6 @@
                         </a>
                         
                         <div class="d-flex align-items-center">
-                            <div class="alert alert-info mb-0 me-3">
-                                <i class="fas fa-info-circle"></i> Silakan login untuk meminjam buku ini.
-                            </div>
                             <a href="{{ route('login') }}" class="btn btn-primary">
                                 <i class="fas fa-sign-in-alt"></i> Login untuk Meminjam
                             </a>

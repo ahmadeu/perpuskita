@@ -17,7 +17,7 @@ use App\Http\Controllers\DashboardController;
 Route::get('/', [DashboardController::class, 'welcome'])->name('welcome');
 Route::get('/guest/books/{book}', [AksesController::class, 'showGuestBook'])->name('guest.books.show');
 
-Route::get('/dashboard', [AksesController::class, 'guest'])->name('dashboard');
+Route::get('/guest', [AksesController::class, 'guest'])->name('dashboard');
 // Halaman landing page
 
 Route::get('/login', [LoginController::class, 'index'])->name('login');
@@ -29,8 +29,11 @@ Route::middleware(['auth'])->group(function () {
     // User routes
     Route::middleware('userAkses:user')->group(function () {
         Route::get('/user', [AksesController::class, 'user'])->name('user');
-        Route::get('/user/books/{book}', [AksesController::class, 'showBook'])->name('user.books.show');
-        Route::post('/user/borrowings', [BorrowingController::class, 'store'])->name('borrowings.store');
+        Route::get('/user/books/{book}', [AksesController::class, 'showBook'])->name('user.book.detail');
+        Route::get('/user/borrowings', [BorrowingController::class, 'indexUser'])->name('user.borrowings');
+        Route::get('/user/borrowings/{borrowing}', [BorrowingController::class, 'show'])->name('user.borrowing.detail');
+        Route::get('/user/books/{book}/borrow', [BorrowingController::class, 'create'])->name('user.borrowings.create');
+        Route::post('/user/borrowings', [BorrowingController::class, 'store'])->name('user.borrowings.store');
     });
 
     // Admin routes

@@ -33,7 +33,7 @@
                         </div>
                     </div>
 
-                    <form action="{{ route('borrowings.store') }}" method="POST">
+                    <form action="{{ route('user.borrowings.store') }}" method="POST">
                         @csrf
                         <input type="hidden" name="book_id" value="{{ $book->id }}">
                         

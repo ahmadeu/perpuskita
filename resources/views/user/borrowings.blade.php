@@ -5,8 +5,11 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Daftar Peminjaman Saya</h5>
+                    <a href="{{ route('user') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Kembali ke Dashboard
+                    </a>
                 </div>
 
                 <div class="card-body">
@@ -52,7 +55,7 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>{{ $borrowing->request_date->format('d/m/Y') }}</td>
+                                        <td>{{ $borrowing->request_date ? $borrowing->request_date->format('d/m/Y') : '-' }}</td>
                                         <td>{{ $borrowing->borrow_date ? $borrowing->borrow_date->format('d/m/Y') : '-' }}</td>
                                         <td>{{ $borrowing->due_date ? $borrowing->due_date->format('d/m/Y') : '-' }}</td>
                                         <td>

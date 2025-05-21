@@ -13,7 +13,7 @@
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 m-2">
         @forelse($books as $book)
             <div class="col">
-                <a href="{{ route('user.books.show', $book->id) }}" class="text-decoration-none">
+                <a href="{{ route('user.book.detail', $book->id) }}" class="text-decoration-none">
                     <div class="card h-100 book-card">
                         @if($book->cover_image)
                             <img src="{{ asset('storage/' . $book->cover_image) }}" class="card-img" alt="{{ $book->title }}">

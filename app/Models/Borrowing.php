@@ -12,14 +12,17 @@ class Borrowing extends Model
     protected $fillable = [
         'user_id',
         'book_id',
+        'request_date',
         'borrow_date',
         'due_date',
         'return_date',
         'status',
-        'notes'
+        'notes',
+        'user_notes'
     ];
 
     protected $casts = [
+        'request_date' => 'date',
         'borrow_date' => 'date',
         'due_date' => 'date',
         'return_date' => 'date'

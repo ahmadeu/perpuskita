@@ -121,9 +121,10 @@
                                         <i class="fas fa-book-reader"></i> Peminjaman
                                     </a>
                                 </li>
-                            @else
+                            @elseif(auth()->user()->role === 'user')
                                 <li class="nav-item">
-                                    <a class="nav-link {{ request()->routeIs('user') ? 'active' : '' }}" href="{{ route('user') }}"> Peminjaman
+                                    <a class="nav-link {{ request()->routeIs('user.borrowings') ? 'active' : '' }}" href="{{ route('user.borrowings') }}">
+                                        <i class="fas fa-book-reader"></i> Peminjaman Saya
                                     </a>
                                 </li>
                             @endif

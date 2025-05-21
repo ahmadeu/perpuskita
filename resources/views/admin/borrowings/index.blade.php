@@ -44,14 +44,20 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $borrowing->user->name }}</td>
                                         <td>{{ $borrowing->book->title }}</td>
-                                        <td>{{ $borrowing->borrow_date->format('d/m/Y') }}</td>
-                                        <td>{{ $borrowing->due_date->format('d/m/Y') }}</td>
+                                        <td>{{ $borrowing->borrow_date ? $borrowing->borrow_date->format('d/m/Y') : '-' }}</td>
+                                        <td>{{ $borrowing->due_date ? $borrowing->due_date->format('d/m/Y') : '-' }}</td>
                                         <td>
-                                            @if($borrowing->status === 'borrowed')
+                                            @if($borrowing->status === 'pending')
+                                                <span class="badge bg-warning">Menunggu Persetujuan</span>
+                                            @elseif($borrowing->status === 'approved')
+                                                <span class="badge bg-info">Disetujui</span>
+                                            @elseif($borrowing->status === 'borrowed')
                                                 <span class="badge bg-primary">Dipinjam</span>
                                             @elseif($borrowing->status === 'returned')
                                                 <span class="badge bg-success">Dikembalikan</span>
-                                            @else
+                                            @elseif($borrowing->status === 'rejected')
+                                                <span class="badge bg-danger">Ditolak</span>
+                                            @elseif($borrowing->status === 'overdue')
                                                 <span class="badge bg-danger">Terlambat</span>
                                             @endif
                                         </td>

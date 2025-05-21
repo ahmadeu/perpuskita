@@ -63,15 +63,26 @@
                             <i class="fas fa-arrow-left"></i> Kembali ke Dashboard
                         </a>
                         
-                        @if($book->quantity > 0)
-                            <a href="{{ route('borrowings.create', $book) }}" class="btn btn-primary">
-                                <i class="fas fa-book-reader"></i> Pinjam Buku
-                            </a>
+                        @auth
+                            @if($book->quantity > 0)
+                                <a href="{{ route('user.borrowings.create', $book) }}" class="btn btn-primary">
+                                    <i class="fas fa-book-reader"></i> Pinjam Buku
+                                </a>
+                            @else
+                                <div class="alert alert-warning mb-0">
+                                    <i class="fas fa-exclamation-circle"></i> Maaf, buku ini sedang tidak tersedia untuk dipinjam.
+                                </div>
+                            @endif
                         @else
-                            <div class="alert alert-warning mb-0">
-                                <i class="fas fa-exclamation-circle"></i> Maaf, buku ini sedang tidak tersedia untuk dipinjam.
+                            <div class="d-flex align-items-center">
+                                <div class="alert alert-info mb-0 me-3">
+                                    <i class="fas fa-info-circle"></i> Silakan login untuk meminjam buku ini.
+                                </div>
+                                <a href="{{ route('login') }}" class="btn btn-primary">
+                                    <i class="fas fa-sign-in-alt"></i> Login untuk Meminjam
+                                </a>
                             </div>
-                        @endif
+                        @endauth
                     </div>
                 </div>
             </div>

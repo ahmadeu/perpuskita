@@ -21,6 +21,11 @@ class BorrowingController extends Controller
 
     public function create(Book $book)
     {
+        // Cek apakah user memiliki role 'user'
+        if (Auth::user()->role !== 'user') {
+            return redirect()->back()->with('error', 'Anda tidak memiliki akses untuk meminjam buku.');
+        }
+
         // Cek apakah user sudah meminjam buku yang sama dan belum dikembalikan
         $existingBorrowing = Borrowing::where('user_id', Auth::id())
             ->where('book_id', $book->id)
@@ -41,38 +46,65 @@ class BorrowingController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'book_id' => 'required|exists:books,id',
-            'user_notes' => 'nullable|string|max:500'
-        ]);
+        try {
+            // Cek apakah user memiliki role 'user'
+            if (Auth::user()->role !== 'user') {
+                Log::warning('User dengan role ' . Auth::user()->role . ' mencoba mengakses store peminjaman');
+                return redirect()->back()->with('error', 'Anda tidak memiliki akses untuk meminjam buku.');
+            }
 
-        $book = Book::findOrFail($request->book_id);
+            Log::info('Mencoba menyimpan peminjaman baru', [
+                'user_id' => Auth::id(),
+                'book_id' => $request->book_id,
+                'user_notes' => $request->user_notes
+            ]);
 
-        // Cek stok buku
-        if ($book->quantity <= 0) {
-            return redirect()->back()->with('error', 'Maaf, buku ini sedang tidak tersedia.');
+            $request->validate([
+                'book_id' => 'required|exists:books,id',
+                'user_notes' => 'nullable|string|max:500'
+            ]);
+
+            $book = Book::findOrFail($request->book_id);
+
+            // Cek stok buku
+            if ($book->quantity <= 0) {
+                Log::warning('Buku tidak tersedia', ['book_id' => $book->id]);
+                return redirect()->back()->with('error', 'Maaf, buku ini sedang tidak tersedia.');
+            }
+
+            // Cek apakah user sudah meminjam buku yang sama
+            $existingBorrowing = Borrowing::where('user_id', Auth::id())
+                ->where('book_id', $request->book_id)
+                ->whereIn('status', ['pending', 'approved', 'borrowed'])
+                ->first();
+
+            if ($existingBorrowing) {
+                Log::warning('User sudah meminjam buku yang sama', [
+                    'user_id' => Auth::id(),
+                    'book_id' => $request->book_id
+                ]);
+                return redirect()->back()->with('error', 'Anda sudah mengajukan peminjaman buku ini sebelumnya.');
+            }
+
+            // Buat peminjaman baru
+            $borrowing = Borrowing::create([
+                'user_id' => Auth::id(),
+                'book_id' => $request->book_id,
+                'request_date' => now(),
+                'user_notes' => $request->user_notes,
+                'status' => 'pending'
+            ]);
+
+            Log::info('Peminjaman berhasil dibuat', ['borrowing_id' => $borrowing->id]);
+
+            return redirect()->route('user.borrowings')->with('success', 'Pengajuan peminjaman berhasil dikirim. Silakan tunggu persetujuan dari admin.');
+        } catch (\Exception $e) {
+            Log::error('Error saat menyimpan peminjaman:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat mengajukan peminjaman: ' . $e->getMessage());
         }
-
-        // Cek apakah user sudah meminjam buku yang sama
-        $existingBorrowing = Borrowing::where('user_id', Auth::id())
-            ->where('book_id', $request->book_id)
-            ->whereIn('status', ['pending', 'approved', 'borrowed'])
-            ->first();
-
-        if ($existingBorrowing) {
-            return redirect()->back()->with('error', 'Anda sudah mengajukan peminjaman buku ini sebelumnya.');
-        }
-
-        // Buat peminjaman baru
-        Borrowing::create([
-            'user_id' => Auth::id(),
-            'book_id' => $request->book_id,
-            'request_date' => now(),
-            'user_notes' => $request->user_notes,
-            'status' => 'pending'
-        ]);
-
-        return redirect()->route('user.borrowings')->with('success', 'Pengajuan peminjaman berhasil dikirim. Silakan tunggu persetujuan dari admin.');
     }
 
     public function edit(Borrowing $borrowing)
@@ -141,6 +173,11 @@ class BorrowingController extends Controller
 
     public function indexUser()
     {
+        // Cek apakah user memiliki role 'user'
+        if (Auth::user()->role !== 'user') {
+            return redirect()->back()->with('error', 'Anda tidak memiliki akses untuk melihat daftar peminjaman.');
+        }
+
         $borrowings = Borrowing::where('user_id', Auth::id())
             ->with(['book'])
             ->latest()
@@ -151,11 +188,41 @@ class BorrowingController extends Controller
 
     public function show(Borrowing $borrowing)
     {
+        // Cek apakah user memiliki role 'user'
+        if (Auth::user()->role !== 'user') {
+            return redirect()->back()->with('error', 'Anda tidak memiliki akses untuk melihat detail peminjaman.');
+        }
+
         // Pastikan user hanya bisa melihat peminjaman miliknya
         if ($borrowing->user_id !== Auth::id()) {
             abort(403);
         }
 
         return view('user.borrowing-detail', compact('borrowing'));
+    }
+
+    public function return(Borrowing $borrowing)
+    {
+        try {
+            // Update status peminjaman
+            $borrowing->update([
+                'status' => 'returned',
+                'return_date' => now()
+            ]);
+
+            // Kembalikan stok buku
+            $book = $borrowing->book;
+            $book->quantity += 1;
+            $book->save();
+
+            return redirect()->route('borrowings.index')
+                ->with('success', 'Buku berhasil dikembalikan');
+        } catch (\Exception $e) {
+            Log::error('Error saat mengembalikan buku:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return back()->with('error', 'Terjadi kesalahan saat mengembalikan buku: ' . $e->getMessage());
+        }
     }
 }

@@ -52,7 +52,7 @@
 
                         <div class="mb-3">
                             <label for="borrow_date" class="form-label">Tanggal Pinjam</label>
-                            <input type="date" class="form-control @error('borrow_date') is-invalid @enderror" id="borrow_date" name="borrow_date" value="{{ old('borrow_date', $borrowing->borrow_date->format('Y-m-d')) }}" required>
+                            <input type="date" class="form-control @error('borrow_date') is-invalid @enderror" id="borrow_date" name="borrow_date" value="{{ old('borrow_date', $borrowing->borrow_date ? $borrowing->borrow_date->format('Y-m-d') : '') }}" required>
                             @error('borrow_date')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -60,7 +60,7 @@
 
                         <div class="mb-3">
                             <label for="due_date" class="form-label">Tanggal Kembali</label>
-                            <input type="date" class="form-control @error('due_date') is-invalid @enderror" id="due_date" name="due_date" value="{{ old('due_date', $borrowing->due_date->format('Y-m-d')) }}" required>
+                            <input type="date" class="form-control @error('due_date') is-invalid @enderror" id="due_date" name="due_date" value="{{ old('due_date', $borrowing->due_date ? $borrowing->due_date->format('Y-m-d') : '') }}" required>
                             @error('due_date')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -77,8 +77,11 @@
                         <div class="mb-3">
                             <label for="status" class="form-label">Status</label>
                             <select class="form-select @error('status') is-invalid @enderror" id="status" name="status" required>
+                                <option value="pending" {{ old('status', $borrowing->status) == 'pending' ? 'selected' : '' }}>Menunggu Persetujuan</option>
+                                <option value="approved" {{ old('status', $borrowing->status) == 'approved' ? 'selected' : '' }}>Disetujui</option>
                                 <option value="borrowed" {{ old('status', $borrowing->status) == 'borrowed' ? 'selected' : '' }}>Dipinjam</option>
                                 <option value="returned" {{ old('status', $borrowing->status) == 'returned' ? 'selected' : '' }}>Dikembalikan</option>
+                                <option value="rejected" {{ old('status', $borrowing->status) == 'rejected' ? 'selected' : '' }}>Ditolak</option>
                                 <option value="overdue" {{ old('status', $borrowing->status) == 'overdue' ? 'selected' : '' }}>Terlambat</option>
                             </select>
                             @error('status')
