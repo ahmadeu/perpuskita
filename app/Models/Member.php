@@ -21,10 +21,10 @@ class Member extends Model
         'profile_image'
     ];
 
-    public function borrows()
-    {
-        return $this->hasMany(Borrow::class);
-    }
+    // public function borrows()
+    // {
+    //     return $this->hasMany(Borrow::class);
+    // }
 
     public function activeBorrows()
     {

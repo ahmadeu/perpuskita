@@ -2,63 +2,89 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $categories = Category::latest()->paginate(10);
+        return view('admin.categories.index', compact('categories'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('admin.categories.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255|unique:categories',
+                'code' => 'required|string|max:10|unique:categories',
+                'description' => 'nullable|string'
+            ]);
+
+            Category::create($validated);
+
+            return redirect()->route('categories.index')
+                ->with('success', 'Kategori berhasil ditambahkan');
+        } catch (\Exception $e) {
+            Log::error('Error saat membuat kategori:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return back()->with('error', 'Terjadi kesalahan saat menambahkan kategori: ' . $e->getMessage());
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit(Category $category)
     {
-        //
+        return view('admin.categories.edit', compact('category'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, Category $category)
     {
-        //
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
+                'code' => 'required|string|max:10|unique:categories,code,' . $category->id,
+                'description' => 'nullable|string'
+            ]);
+
+            $category->update($validated);
+
+            return redirect()->route('categories.index')
+                ->with('success', 'Kategori berhasil diperbarui');
+        } catch (\Exception $e) {
+            Log::error('Error saat mengupdate kategori:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return back()->with('error', 'Terjadi kesalahan saat memperbarui kategori: ' . $e->getMessage());
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy(Category $category)
     {
-        //
-    }
+        try {
+            // Cek apakah kategori masih digunakan oleh buku
+            if ($category->books()->count() > 0) {
+                return back()->with('error', 'Kategori tidak dapat dihapus karena masih digunakan oleh buku');
+            }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+            $category->delete();
+            return redirect()->route('categories.index')
+                ->with('success', 'Kategori berhasil dihapus');
+        } catch (\Exception $e) {
+            Log::error('Error saat menghapus kategori:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return back()->with('error', 'Terjadi kesalahan saat menghapus kategori: ' . $e->getMessage());
+        }
     }
 }
