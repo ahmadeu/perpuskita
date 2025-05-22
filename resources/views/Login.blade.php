@@ -73,12 +73,12 @@
 <div class="container mt-4">
     <div class="row justify-content-center">
         @if(request()->routeIs('login'))
-                <div class="mb-3">
-                    <a href="{{ route('welcome') }}" class="btn btn-primary">
-                        <i class="fas fa-arrow-left me-2"></i>Kembali ke Dashboard
-                    </a>
-                </div>
-            @endif
+            <div class="mb-3">
+                <a href="{{ route('welcome') }}" class="btn btn-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Kembali ke Dashboard
+                </a>
+            </div>
+        @endif
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
@@ -98,10 +98,11 @@
                     <form action="{{ route('login.post') }}" method="POST">
                         @csrf
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control @error('email') is-invalid @enderror" 
-                                   id="email" name="email" value="{{ old('email') }}" required>
-                            @error('email')
+                            <label for="login" class="form-label">NIM atau Email</label>
+                            <input type="text" class="form-control @error('login') is-invalid @enderror" 
+                                   id="login" name="login" value="{{ old('login') }}" 
+                                   placeholder="Masukkan NIM atau Email" required>
+                            @error('login')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -109,7 +110,7 @@
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
                             <input type="password" class="form-control @error('password') is-invalid @enderror" 
-                                   id="password" name="password" required>
+                                   id="password" name="password" placeholder="Password" required>
                             @error('password')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

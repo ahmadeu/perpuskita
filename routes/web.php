@@ -20,8 +20,8 @@ Route::get('/guest/books/{book}', [AksesController::class, 'showGuestBook'])->na
 Route::get('/guest', [AksesController::class, 'guest'])->name('dashboard');
 // Halaman landing page
 
-Route::get('/login', [LoginController::class, 'index'])->name('login');
-Route::post('/login', [LoginController::class, 'login'])->name('login.post');
+Route::get('/login', [LoginController::class, 'index'])->name('login')->middleware('web');
+Route::post('/login', [LoginController::class, 'login'])->name('login.post')->middleware('web');
 
 Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
@@ -39,10 +39,10 @@ Route::middleware(['auth'])->group(function () {
     // Admin routes
     Route::middleware('userAkses:admin')->group(function () {
         Route::get('/admin', [AksesController::class, 'index'])->name('admin');
-        Route::resource('users', UserController::class);
-        Route::resource('categories', CategoryController::class);
-        Route::resource('books', BookController::class);
-        Route::resource('borrowings', BorrowingController::class);
+        Route::resource('/admin/users', UserController::class);
+        Route::resource('/admin/categories', CategoryController::class);
+        Route::resource('/admin/books', BookController::class);
+        Route::resource('/admin/borrowings', BorrowingController::class);
         Route::post('borrowings/{borrowing}/return', [BorrowingController::class, 'return'])->name('borrowings.return');
     });
 });

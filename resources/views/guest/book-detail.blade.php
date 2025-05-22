@@ -8,7 +8,10 @@
                 @if($book->cover_image)
                     <img src="{{ asset('storage/' . $book->cover_image) }}" class="book-cover-detail" alt="{{ $book->title }}">
                 @else
-                    <img src="https://via.placeholder.com/300x400" class="book-cover-detail" alt="{{ $book->title }}">
+                    <div class="book-cover-detail default-cover d-flex flex-column justify-content-center align-items-center">
+                        <i class="fas fa-book fa-5x mb-3"></i>
+                        <h4 class="text-center px-2">{{ $book->title }}</h4>
+                    </div>
                 @endif
             </div>
 
@@ -84,6 +87,20 @@
         width: auto;
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         border-radius: 8px;
+    }
+    
+    .default-cover {
+        background: linear-gradient(135deg, #2c3e50, #3498db);
+        color: white;
+        text-align: center;
+        padding: 2rem;
+        min-height: 400px;
+        width: 300px;
+        margin: 0 auto;
+    }
+    
+    .default-cover i {
+        color: rgba(255, 255, 255, 0.8);
     }
     
     .card {

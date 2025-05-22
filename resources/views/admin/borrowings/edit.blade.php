@@ -90,11 +90,18 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="notes" class="form-label">Catatan</label>
+                            <label for="notes" class="form-label">Catatan Admin</label>
                             <textarea class="form-control @error('notes') is-invalid @enderror" id="notes" name="notes" rows="3">{{ old('notes', $borrowing->notes) }}</textarea>
                             @error('notes')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Catatan User</label>
+                            <div class="form-control bg-light">
+                                {{ $borrowing->user_notes ?: 'Tidak ada catatan' }}
+                            </div>
                         </div>
 
                         <div class="d-flex justify-content-between">

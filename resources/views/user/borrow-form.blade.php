@@ -22,7 +22,10 @@
                                 @if($book->cover_image)
                                     <img src="{{ asset('storage/' . $book->cover_image) }}" class="img-fluid rounded" alt="{{ $book->title }}">
                                 @else
-                                    <img src="https://via.placeholder.com/300x400" class="img-fluid rounded" alt="{{ $book->title }}">
+                                    <div class="img-fluid rounded default-cover d-flex flex-column justify-content-center align-items-center">
+                                        <i class="fas fa-book fa-4x mb-3"></i>
+                                        <h5 class="text-center px-2">{{ $book->title }}</h5>
+                                    </div>
                                 @endif
                             </div>
                             <div class="col-md-8">
@@ -80,6 +83,21 @@
         max-height: 200px;
         width: auto;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .default-cover {
+        background: linear-gradient(135deg, #2c3e50, #3498db);
+        color: white;
+        text-align: center;
+        padding: 1rem;
+        min-height: 200px;
+        width: auto;
+        max-width: 200px;
+        margin: 0 auto;
+    }
+    
+    .default-cover i {
+        color: rgba(255, 255, 255, 0.8);
     }
 </style>
 @endsection 

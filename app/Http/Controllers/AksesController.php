@@ -19,34 +19,48 @@ class AksesController extends Controller
     }
     function user()
     {
+        $categories = Category::all();
         $books = Book::with('category')
-            ->when(request('search'), function($query) {
+            ->when(request('search'), function ($query) {
                 $query->where('title', 'like', '%' . request('search') . '%')
                     ->orWhere('author', 'like', '%' . request('search') . '%')
-                    ->orWhere('description', 'like', '%' . request('search') . '%');
+                    ->orWhere('description', 'like', '%' . request('search') . '%')
+                    ->orWhereHas('category', function ($q) {
+                        $q->where('name', 'like', '%' . request('search') . '%');
+                    });
+            })
+            ->when(request('category'), function($query) {
+                $query->where('category_id', request('category'));
             })
             ->latest()
             ->paginate(12);
-            
-        return view('user.dashboard', compact('books'));
+
+        return view('user.dashboard', compact('books', 'categories'));
     }
     function guest()
     {
+        $categories = Category::all();
         $books = Book::with('category')
-            ->when(request('search'), function($query) {
+            ->when(request('search'), function ($query) {
                 $query->where('title', 'like', '%' . request('search') . '%')
                     ->orWhere('author', 'like', '%' . request('search') . '%')
-                    ->orWhere('description', 'like', '%' . request('search') . '%');
+                    ->orWhere('description', 'like', '%' . request('search') . '%')
+                    ->orWhereHas('category', function ($q) {
+                        $q->where('name', 'like', '%' . request('search') . '%');
+                    });
+            })
+            ->when(request('category'), function($query) {
+                $query->where('category_id', request('category'));
             })
             ->latest()
             ->paginate(12);
-            
-        return view('guest.dashboard', compact('books'));
+
+        return view('guest.dashboard', compact('books', 'categories'));
     }
 
     public function showBook(Book $book)
     {
-        
+
         return view('user.book-detail', compact('book'));
     }
 

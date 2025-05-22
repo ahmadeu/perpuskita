@@ -14,32 +14,28 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ], [
-            'email.required' => 'Email harus diisi',
-            'email.email' => 'Format email tidak valid',
-            'password.required' => 'Password harus diisi'
+        $credentials = $request->validate([
+            'login' => 'required|string',
+            'password' => 'required|string'
         ]);
 
-        $credentials = [
-            'email' => $request->email,
-            'password' => $request->password
-        ];
-
-        if (Auth::attempt($credentials)) {
+        // Cek apakah input adalah email atau NIM
+        $loginType = filter_var($credentials['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'nim';
+        
+        // Coba login dengan email atau NIM
+        if (Auth::attempt([$loginType => $credentials['login'], 'password' => $credentials['password']])) {
             $request->session()->regenerate();
             
+            // Redirect berdasarkan role
             if (Auth::user()->role === 'admin') {
-                return redirect()->route('admin');
-            } else if (Auth::user()->role === 'user') {
-                return redirect()->route('user');
+                return redirect()->intended(route('admin'));
+            } else {
+                return redirect()->intended(route('user'));
             }
         }
 
         return back()->withErrors([
-            'email' => 'Email atau password yang dimasukkan salah',
+            'login' => 'NIM atau email atau password yang dimasukkan tidak sesuai.',
         ])->withInput($request->except('password'));
     }
 

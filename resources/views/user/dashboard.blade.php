@@ -5,6 +5,14 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Koleksi Buku</h2>
         <form class="d-flex" method="GET" action="{{ route('user') }}">
+            <select name="category" class="form-select me-2" style="width: 200px;">
+                <option value="">Semua Kategori</option>
+                @foreach($categories as $category)
+                    <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
+                        {{ $category->name }}
+                    </option>
+                @endforeach
+            </select>
             <input type="text" name="search" class="form-control me-2" placeholder="Cari buku..." value="{{ request('search') }}">
             <button type="submit" class="btn btn-outline-primary">Cari</button>
         </form>
@@ -18,7 +26,10 @@
                         @if($book->cover_image)
                             <img src="{{ asset('storage/' . $book->cover_image) }}" class="card-img" alt="{{ $book->title }}">
                         @else
-                            <img src="https://via.placeholder.com/300x400" class="card-img" alt="{{ $book->title }}">
+                            <div class="card-img default-cover d-flex flex-column justify-content-center align-items-center">
+                                <i class="fas fa-book fa-4x mb-3"></i>
+                                <h5 class="text-center px-2"></h5>
+                            </div>
                         @endif
                         <div class="card-img-overlay d-flex flex-column justify-content-end">
                             <h5 class="card-title text-white">{{ $book->title }}</h5>
@@ -63,6 +74,17 @@
         filter: brightness(0.7);
     }
     
+    .default-cover {
+        background: linear-gradient(135deg, #2c3e50, #3498db);
+        color: white;
+        text-align: center;
+        padding: 1rem;
+    }
+    
+    .default-cover i {
+        color: rgba(255, 255, 255, 0.8);
+    }
+    
     .card-img-overlay {
         background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
         padding: 1.25rem;
@@ -71,6 +93,21 @@
     .badge {
         font-size: 0.8rem;
         padding: 0.5em 1em;
+    }
+
+    .form-select {
+        border-radius: 0.375rem;
+        border: 1px solid #ced4da;
+    }
+
+    @media (max-width: 768px) {
+        .d-flex {
+            flex-direction: column;
+            gap: 10px;
+        }
+        .form-select, .form-control {
+            width: 100% !important;
+        }
     }
 </style>
 @endsection

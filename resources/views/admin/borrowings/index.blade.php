@@ -35,6 +35,8 @@
                                     <th>Tanggal Pinjam</th>
                                     <th>Tanggal Kembali</th>
                                     <th>Status</th>
+                                    <th>Catatan User</th>
+                                    <th>Catatan Admin</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -60,6 +62,12 @@
                                             @elseif($borrowing->status === 'overdue')
                                                 <span class="badge bg-danger">Terlambat</span>
                                             @endif
+                                        </td>
+                                        <td>
+                                            {{ $borrowing->user_notes ?: '-' }}
+                                        </td>
+                                        <td>
+                                            {{ $borrowing->notes ?: '-' }}
                                         </td>
                                         <td>
                                             @if($borrowing->status === 'borrowed')
