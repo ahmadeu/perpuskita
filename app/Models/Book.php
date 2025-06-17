@@ -17,6 +17,7 @@ class Book extends Model
         'publisher',
         'publish_year',
         'quantity',
+        'total_borrowed',
         'description',
         'cover_image',
         'status'
@@ -24,12 +25,18 @@ class Book extends Model
 
     protected $casts = [
         'publish_year' => 'integer',
-        'quantity' => 'integer'
+        'quantity' => 'integer',
+        'total_borrowed' => 'integer'
     ];
 
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function borrowings()
+    {
+        return $this->hasMany(Borrowing::class, 'book_id');
     }
 
     public function isAvailable()

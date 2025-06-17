@@ -84,7 +84,10 @@ class BookController extends Controller
                 $validated['cover_image'] = $path;
         }
         
-            Log::info('Data yang akan disimpan:', $validated);
+        // Inisialisasi total_borrowed
+        $validated['total_borrowed'] = 0;
+        
+        Log::info('Data yang akan disimpan:', $validated);
         $book = Book::create($validated);
             Log::info('Buku berhasil dibuat:', ['id' => $book->id]);
         

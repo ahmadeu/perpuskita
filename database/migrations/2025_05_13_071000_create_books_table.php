@@ -11,24 +11,25 @@ class CreateBooksTable extends Migration
      *
      * @return void
      */
-    public function up()
-    {
-        Schema::create('books', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->string('isbn')->nullable();
-            $table->foreignId('category_id')->constrained();
-            $table->string('author');
-            $table->string('publisher')->nullable();
-            $table->year('publish_year')->nullable();
-            $table->integer('quantity')->default(1);
-            $table->text('description')->nullable();
-            $table->string('cover_image')->nullable();
-            $table->string('status')->default('available');
-            $table->timestamps();
-        });
-    }
-
+    
+    public function up(): void
+{
+    Schema::create('books', function (Blueprint $table) {
+        $table->id();
+        $table->string('title');
+        $table->string('isbn')->nullable();
+        $table->foreignId('category_id')->constrained();
+        $table->string('author');
+        $table->string('publisher')->nullable();
+        $table->year('publish_year')->nullable();
+        $table->integer('quantity')->default(1);
+        $table->integer('total_borrowed')->default(0); // ← ditambahkan di sini
+        $table->text('description')->nullable();
+        $table->string('cover_image')->nullable();
+        $table->string('status')->default('available');
+        $table->timestamps();
+    });
+}
     /**
      * Reverse the migrations.
      *

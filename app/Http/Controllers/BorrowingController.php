@@ -21,12 +21,24 @@ class BorrowingController extends Controller
 
     public function create(Book $book)
     {
-        // Cek apakah user memiliki role 'user'
-        if (Auth::user()->role !== 'user') {
+        // Cek apakah user memiliki role 'user' atau 'admin'
+        if (!in_array(Auth::user()->role, ['user', 'admin'])) {
             return redirect()->back()->with('error', 'Anda tidak memiliki akses untuk meminjam buku.');
         }
 
-        // Cek apakah user sudah meminjam buku yang sama dan belum dikembalikan
+        // Jika admin, tampilkan form dengan daftar user dan buku
+        if (Auth::user()->role === 'admin') {
+            $users = User::where('role', 'user')->get();
+            $books = Book::all();
+            return view('admin.borrowings.create', compact('books', 'users'));
+        }
+
+        // Jika user biasa, cek stok buku
+        if ($book->quantity <= 0) {
+            return redirect()->back()->with('error', 'Maaf, buku ini sedang tidak tersedia.');
+        }
+
+        // Cek apakah user sudah meminjam buku yang sama
         $existingBorrowing = Borrowing::where('user_id', Auth::id())
             ->where('book_id', $book->id)
             ->whereIn('status', ['pending', 'approved', 'borrowed'])
@@ -36,19 +48,15 @@ class BorrowingController extends Controller
             return redirect()->back()->with('error', 'Anda sudah mengajukan peminjaman buku ini sebelumnya.');
         }
 
-        // Cek stok buku
-        if ($book->quantity <= 0) {
-            return redirect()->back()->with('error', 'Maaf, buku ini sedang tidak tersedia.');
-        }
-
+        // Jika user biasa, tampilkan form biasa
         return view('user.borrow-form', compact('book'));
     }
 
     public function store(Request $request)
     {
         try {
-            // Cek apakah user memiliki role 'user'
-            if (Auth::user()->role !== 'user') {
+            // Cek apakah user memiliki role 'user' atau 'admin'
+            if (!in_array(Auth::user()->role, ['user', 'admin'])) {
                 Log::warning('User dengan role ' . Auth::user()->role . ' mencoba mengakses store peminjaman');
                 return redirect()->back()->with('error', 'Anda tidak memiliki akses untuk meminjam buku.');
             }
@@ -59,45 +67,76 @@ class BorrowingController extends Controller
                 'user_notes' => $request->user_notes
             ]);
 
-            $request->validate([
-                'book_id' => 'required|exists:books,id',
-                'user_notes' => 'nullable|string|max:500'
-            ]);
-
-            $book = Book::findOrFail($request->book_id);
-
-            // Cek stok buku
-            if ($book->quantity <= 0) {
-                Log::warning('Buku tidak tersedia', ['book_id' => $book->id]);
-                return redirect()->back()->with('error', 'Maaf, buku ini sedang tidak tersedia.');
-            }
-
-            // Cek apakah user sudah meminjam buku yang sama
-            $existingBorrowing = Borrowing::where('user_id', Auth::id())
-                ->where('book_id', $request->book_id)
-                ->whereIn('status', ['pending', 'approved', 'borrowed'])
-                ->first();
-
-            if ($existingBorrowing) {
-                Log::warning('User sudah meminjam buku yang sama', [
-                    'user_id' => Auth::id(),
-                    'book_id' => $request->book_id
+            // Validasi berbeda untuk admin dan user
+            if (Auth::user()->role === 'admin') {
+                $request->validate([
+                    'book_id' => 'required|exists:books,id',
+                    'user_id' => 'required|exists:users,id',
+                    'borrow_date' => 'required|date',
+                    'due_date' => 'required|date|after:borrow_date',
+                    'notes' => 'nullable|string|max:500'
                 ]);
-                return redirect()->back()->with('error', 'Anda sudah mengajukan peminjaman buku ini sebelumnya.');
+
+                // Buat peminjaman baru untuk admin
+                $borrowing = Borrowing::create([
+                    'user_id' => $request->user_id,
+                    'book_id' => $request->book_id,
+                    'request_date' => now(),
+                    'borrow_date' => $request->borrow_date,
+                    'due_date' => $request->due_date,
+                    'notes' => $request->notes,
+                    'status' => 'borrowed'
+                ]);
+
+                // Update stok buku
+                $book = Book::findOrFail($request->book_id);
+                $book->quantity = max(0, $book->quantity - 1);
+                $book->total_borrowed += 1;
+                $book->save();
+
+                Log::info('Peminjaman berhasil dibuat oleh admin', ['borrowing_id' => $borrowing->id]);
+                return redirect()->route('borrowings.index')->with('success', 'Peminjaman berhasil dibuat.');
+            } else {
+                // Validasi untuk user biasa
+                $request->validate([
+                    'book_id' => 'required|exists:books,id',
+                    'user_notes' => 'nullable|string|max:500'
+                ]);
+
+                $book = Book::findOrFail($request->book_id);
+
+                // Cek stok buku untuk user biasa
+                if ($book->quantity <= 0) {
+                    Log::warning('Buku tidak tersedia', ['book_id' => $book->id]);
+                    return redirect()->back()->with('error', 'Maaf, buku ini sedang tidak tersedia.');
+                }
+
+                // Cek apakah user sudah meminjam buku yang sama
+                $existingBorrowing = Borrowing::where('user_id', Auth::id())
+                    ->where('book_id', $request->book_id)
+                    ->whereIn('status', ['pending', 'approved', 'borrowed'])
+                    ->first();
+
+                if ($existingBorrowing) {
+                    Log::warning('User sudah meminjam buku yang sama', [
+                        'user_id' => Auth::id(),
+                        'book_id' => $request->book_id
+                    ]);
+                    return redirect()->back()->with('error', 'Anda sudah mengajukan peminjaman buku ini sebelumnya.');
+                }
+
+                // Buat peminjaman baru untuk user biasa
+                $borrowing = Borrowing::create([
+                    'user_id' => Auth::id(),
+                    'book_id' => $request->book_id,
+                    'request_date' => now(),
+                    'user_notes' => $request->user_notes,
+                    'status' => 'pending'
+                ]);
+
+                Log::info('Peminjaman berhasil dibuat oleh user', ['borrowing_id' => $borrowing->id]);
+                return redirect()->route('user.borrowings')->with('success', 'Pengajuan peminjaman berhasil dikirim. Silakan tunggu persetujuan dari admin.');
             }
-
-            // Buat peminjaman baru
-            $borrowing = Borrowing::create([
-                'user_id' => Auth::id(),
-                'book_id' => $request->book_id,
-                'request_date' => now(),
-                'user_notes' => $request->user_notes,
-                'status' => 'pending'
-            ]);
-
-            Log::info('Peminjaman berhasil dibuat', ['borrowing_id' => $borrowing->id]);
-
-            return redirect()->route('user.borrowings')->with('success', 'Pengajuan peminjaman berhasil dikirim. Silakan tunggu persetujuan dari admin.');
         } catch (\Exception $e) {
             Log::error('Error saat menyimpan peminjaman:', [
                 'message' => $e->getMessage(),
@@ -129,6 +168,9 @@ class BorrowingController extends Controller
             if ($validated['status'] === 'approved' || $validated['status'] === 'borrowed') {
                 $book = $borrowing->book;
                 $book->quantity = max(0, $book->quantity - 1);
+                if ($borrowing->status !== 'approved' && $borrowing->status !== 'borrowed') {
+                    $book->total_borrowed += 1;
+                }
                 $book->save();
             } elseif ($validated['status'] === 'returned' || $validated['status'] === 'rejected') {
                 $book = $borrowing->book;

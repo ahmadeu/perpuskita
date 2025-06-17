@@ -4,34 +4,44 @@
 
 @section('styles')
 <style>
+    body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
     .login-section {
-        min-height: calc(100vh - 300px);
+        flex: 1;
         display: flex;
         align-items: center;
-        padding: 40px 0;
+        justify-content: center;
+        padding: 20px 0;
     }
     
     .login-card {
         border: none;
         border-radius: 15px;
         box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 450px;
+        margin: 0 auto;
     }
     
     .login-header {
         background: linear-gradient(to right, #0d6efd, #0dcaf0);
         color: white;
-        padding: 20px;
+        padding: 15px;
         border-radius: 15px 15px 0 0;
         text-align: center;
     }
     
     .login-body {
-        padding: 30px;
+        padding: 20px;
     }
     
     .form-control {
         border-radius: 10px;
-        padding: 12px;
+        padding: 10px;
         border: 1px solid #ddd;
     }
     
@@ -43,10 +53,10 @@
         background: linear-gradient(to right, #0d6efd, #0dcaf0);
         border: none;
         border-radius: 10px;
-        padding: 12px;
+        padding: 10px;
         font-weight: 600;
         width: 100%;
-        margin-top: 20px;
+        margin-top: 15px;
     }
     
     .btn-login:hover {
@@ -55,7 +65,8 @@
     
     .login-footer {
         text-align: center;
-        margin-top: 20px;
+        margin-top: 15px;
+        padding: 10px 0;
     }
     
     .login-footer a {
@@ -66,12 +77,24 @@
     .login-footer a:hover {
         text-decoration: underline;
     }
+
+    .mb-3 {
+        margin-bottom: 1rem !important;
+    }
+
+    .card-header {
+        padding: 15px;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
 </style>
 @endsection
 
 @section('content')
-<div class="container mt-4">
-    <div class="row justify-content-center">
+<div class="login-section">
+    <div class="container">
         @if(request()->routeIs('login'))
             <div class="mb-3">
                 <a href="{{ route('welcome') }}" class="btn btn-primary">
@@ -79,8 +102,9 @@
                 </a>
             </div>
         @endif
+        <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card">
+                <div class="card login-card">
                 <div class="card-header">
                     <h4 class="mb-0">Login</h4>
                 </div>
@@ -120,6 +144,7 @@
                             <button type="submit" class="btn btn-primary">Login</button>
                         </div>
                     </form>
+                    </div>
                 </div>
             </div>
         </div>

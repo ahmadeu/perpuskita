@@ -17,15 +17,17 @@ class Borrowing extends Model
         'due_date',
         'return_date',
         'status',
+        'user_notes',
         'notes',
-        'user_notes'
+        'late_fee',
+        'days_late'
     ];
 
     protected $casts = [
-        'request_date' => 'date',
-        'borrow_date' => 'date',
-        'due_date' => 'date',
-        'return_date' => 'date'
+        'request_date' => 'datetime',
+        'borrow_date' => 'datetime',
+        'due_date' => 'datetime',
+        'return_date' => 'datetime',
     ];
 
     public function user()

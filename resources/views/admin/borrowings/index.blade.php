@@ -37,6 +37,7 @@
                                     <th>Status</th>
                                     <th>Catatan User</th>
                                     <th>Catatan Admin</th>
+                                    <th>Denda</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -68,6 +69,27 @@
                                         </td>
                                         <td>
                                             {{ $borrowing->notes ?: '-' }}
+                                        </td>
+                                        <td>
+                                            @if($borrowing->status === 'overdue')
+                                                <div class="text-danger">
+                                                    <strong>Rp {{ number_format($borrowing->late_fee, 0, ',', '.') }}</strong>
+                                                    <br>
+                                                    <small>Terlambat: {{ $borrowing->days_late }} Hari</small>
+                                                </div>
+                                            @elseif($borrowing->due_date && $borrowing->due_date < now() && $borrowing->status !== 'returned')
+                                                @php
+                                                    $daysLate = max(0, now()->diffInDays($borrowing->due_date));
+                                                    $lateFee = $daysLate * 1000; // Denda Rp 1.000 per hari
+                                                @endphp
+                                                <div class="text-danger">
+                                                    <strong>Rp {{ number_format($lateFee, 0, ',', '.') }}</strong>
+                                                    <br>
+                                                    <small>Terlambat: {{ $daysLate }} Hari</small>
+                                                </div>
+                                            @else
+                                                -
+                                            @endif
                                         </td>
                                         <td>
                                             @if($borrowing->status === 'borrowed')
