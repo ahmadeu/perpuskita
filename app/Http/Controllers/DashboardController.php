@@ -8,15 +8,16 @@ use App\Models\Borrow;
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; // ✅ Tambahkan ini
+use Illuminate\Support\Facades\Auth; 
 use Carbon\Carbon;
+use App\Models\Borrowing;
 
 class DashboardController extends Controller
 {
     public function index()
     {
         $totalBooks = Book::count();
-        $totalMembers = User::where('role', 'user')->count();
+        $total = User::where('role', 'user')->count();
         $totalCategories = Category::count();
         // $totalBorrows = Borrow::count();
         
@@ -36,8 +37,9 @@ class DashboardController extends Controller
                             ->get();
 
         $user = Auth::user(); // ✅ Pakai Auth::user() bukan auth()->user()
+        $lateReturnsCount = Borrowing::where('status', 'overdue')->count();
 
-        return view('user.dashboard', compact(
+        return view('admin.dashboard', compact(
             'totalBooks',
             'totalMembers',
             'totalCategories',
@@ -46,7 +48,8 @@ class DashboardController extends Controller
             'overdueBooks',
             'recentBorrows',
             'popularBooks',
-            'user'
+            'user',
+            'lateReturnsCount'
         ));
     }
 
@@ -57,7 +60,7 @@ class DashboardController extends Controller
         $recentBooks = Book::orderBy('created_at', 'desc')->take(6)->get();
         $categories = Category::all();
 
-        $user = Auth::user(); // ✅ Sama di sini
+        $user = Auth::user(); //
 
         return view('welcome', compact(
             'totalBooks',

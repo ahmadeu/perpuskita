@@ -208,7 +208,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="mb-0">Keterlambatan</h6>
-                            <h2 class="mb-0">{{ $lateReturnsCount }}</h2>
+                            <h2 class="mb-0">{{ number_format($totalLateFee, 0, ',', '.') }}</h2>
                         </div>
                         <i class="fas fa-exclamation-triangle fa-2x"></i>
                     </div>

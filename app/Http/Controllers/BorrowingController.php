@@ -13,6 +13,12 @@ class BorrowingController extends Controller
 {
     public function index(Request $request)
     {
+        // Update status overdue untuk semua peminjaman yang sudah melewati due_date dan belum dikembalikan
+        Borrowing::where('status', 'borrowed')
+            ->where('due_date', '<', now())
+            ->whereNull('return_date')
+            ->update(['status' => 'overdue']);
+
         $query = Borrowing::with(['user', 'book']);
 
         if ($request->filled('search')) {
@@ -218,8 +224,6 @@ class BorrowingController extends Controller
                 $borrowing->status === 'overdue'
             ) {
                 $borrowing->status = 'borrowed';
-                $borrowing->late_fee = 0;
-                $borrowing->days_late = 0;
                 $borrowing->save();
             }
 

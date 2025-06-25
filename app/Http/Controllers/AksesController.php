@@ -21,28 +21,8 @@ class AksesController extends Controller
         $activeBorrowings = Borrowing::whereIn('status', ['pending', 'approved'])->count();
         
         // Perhitungan keterlambatan yang lebih akurat
-        $lateReturns = Borrowing::whereIn('status', ['approved', 'borrowed'])
-            ->where('due_date', '<', now())
-            ->whereNull('return_date')
-            ->get()
-            ->map(function($borrowing) {
-                $daysLate = max(0, now()->diffInDays($borrowing->due_date));
-                
-                // Update status, late_fee, dan days_late dalam satu query
-                Borrowing::where('id', $borrowing->id)->update([
-                    'status' => 'overdue',
-                    'late_fee' => $daysLate * 1000,
-                    'days_late' => $daysLate
-                ]);
-                
-                return $borrowing;
-            });
-        
-        // Hitung total denda dari semua peminjaman yang terlambat
-        $totalLateFee = Borrowing::where('status', 'overdue')
-            ->sum('late_fee');
-        $lateReturnsCount = Borrowing::where('status', 'overdue')
-            ->count();
+        $lateReturns = Borrowing::where('status', 'overdue')->get();
+        $lateReturnsCount = $lateReturns->count();
 
         // Peminjaman Terbaru
         $recentBorrowings = Borrowing::with(['user', 'book'])
@@ -65,11 +45,10 @@ class AksesController extends Controller
             'totalBooks',
             'totalUsers',
             'activeBorrowings',
-            'lateReturnsCount',
-            'totalLateFee',
             'recentBorrowings',
             'popularBooks',
-            'lowStockBooks'
+            'lowStockBooks',
+            'lateReturnsCount'
         ));
     }
     function user()

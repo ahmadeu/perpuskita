@@ -123,29 +123,15 @@
         </div>
         @php
             $totalDenda = 0;
-            $dendaDetails = [];
             foreach($borrowings as $borrowing) {
-                // Hanya hitung denda untuk peminjaman yang sudah disetujui dan belum dikembalikan
-                if ($borrowing->status !== 'pending' && $borrowing->status !== 'rejected' && $borrowing->due_date) {
-                    $tgl1 = \Carbon\Carbon::now();
-                    $tgl2 = \Carbon\Carbon::parse($borrowing->due_date);
-                    $selisih = $tgl2->diffInDays($tgl1, false);
-                    
-                    // Pastikan selisih adalah integer dan positif
-                    $selisih = max(0, (int) floor($selisih));
-                    
-                    if ($selisih > 0) {
-                        $dendaPerBuku = $selisih * 1000;
-                        $totalDenda += $dendaPerBuku;
-                        
-                        $dendaDetails[] = [
-                            'peminjam' => $borrowing->user->name,
-                            'buku' => $borrowing->book->title,
-                            'due_date' => $borrowing->due_date->format('d/m/Y'),
-                            'selisih_hari' => $selisih,
-                            'denda' => $dendaPerBuku
-                        ];
-                    }
+                $u_denda = 1000;
+                $tgl1 = \Carbon\Carbon::now();
+                $tgl2 = $borrowing->due_date ? \Carbon\Carbon::parse($borrowing->due_date) : null;
+                $selisih = ($tgl2) ? $tgl2->diffInDays($tgl1, false) : 0;
+                $selisih = max(0, (int) floor($selisih));
+                // Hanya hitung denda jika status bukan pending, rejected, returned dan selisih > 0
+                if (!in_array($borrowing->status, ['pending', 'rejected', 'returned']) && $selisih > 0) {
+                    $totalDenda += $selisih * $u_denda;
                 }
             }
         @endphp
@@ -153,9 +139,6 @@
         <div style="margin-top: 15px; text-align: center; padding: 10px; background: #fff3cd; border-radius: 5px;">
             <div style="font-size: 16px; font-weight: bold; color: #856404;">
                 Total Denda: Rp. {{ number_format($totalDenda, 0, ',', '.') }}
-            </div>
-            <div style="font-size: 12px; color: #856404; margin-top: 5px;">
-                ({{ count($dendaDetails) }} peminjaman terlambat)
             </div>
         </div>
         @endif
@@ -225,7 +208,7 @@
                                 $denda = $selisih * $u_denda;
                             }
                         @endphp
-                        @if ($borrowing->status === 'pending' || $borrowing->status === 'rejected')
+                        @if ($borrowing->status === 'pending' || $borrowing->status === 'rejected' || $borrowing->status === 'returned')
                             -
                         @elseif ($selisih <= 0)
                             <span style="font-size: 8px;">Masa Aktif</span>

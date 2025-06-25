@@ -20,8 +20,6 @@ class Borrowing extends Model
         'status',
         'user_notes',
         'notes',
-        'late_fee',
-        'days_late'
     ];
 
     protected $casts = [
