@@ -10,11 +10,11 @@
                 </div>
 
                 <div class="card-body">
-                    @if (session('error'))
+                    {{-- @if (session('error'))
                         <div class="alert alert-danger" role="alert">
                             {{ session('error') }}
                         </div>
-                    @endif
+                    @endif --}}
 
                     <form action="{{ route('borrowings.update', $borrowing) }}" method="POST">
                         @csrf
@@ -62,6 +62,36 @@
                             <label for="due_date" class="form-label">Tanggal Kembali</label>
                             <input type="date" class="form-control @error('due_date') is-invalid @enderror" id="due_date" name="due_date" value="{{ old('due_date', $borrowing->due_date ? $borrowing->due_date->format('Y-m-d') : '') }}" required>
                             @error('due_date')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const borrowInput = document.getElementById('borrow_date');
+                            const dueInput = document.getElementById('due_date');
+                            borrowInput.addEventListener('change', function() {
+                                if (borrowInput.value) {
+                                    const borrowDate = new Date(borrowInput.value);
+                                    borrowDate.setDate(borrowDate.getDate() + 7);
+                                    const yyyy = borrowDate.getFullYear();
+                                    const mm = String(borrowDate.getMonth() + 1).padStart(2, '0');
+                                    const dd = String(borrowDate.getDate()).padStart(2, '0');
+                                    dueInput.value = `${yyyy}-${mm}-${dd}`;
+                                }
+                            });
+                        });
+                        </script>
+
+                        <div class="mb-3">
+                            <label for="pickup_time" class="form-label">Jam Pengambilan</label>
+                            <select name="pickup_time" id="pickup_time" class="form-control @error('pickup_time') is-invalid @enderror" required>
+                                <option value="">Pilih Jam Pengambilan</option>
+                                <option value="08:00" {{ old('pickup_time', $borrowing->pickup_time ? $borrowing->pickup_time->format('H:i') : '') == '08:00' ? 'selected' : '' }}>08:00 - 09:00</option>
+                                <option value="10:00" {{ old('pickup_time', $borrowing->pickup_time ? $borrowing->pickup_time->format('H:i') : '') == '10:00' ? 'selected' : '' }}>10:00 - 11:00</option>
+                                <option value="13:00" {{ old('pickup_time', $borrowing->pickup_time ? $borrowing->pickup_time->format('H:i') : '') == '13:00' ? 'selected' : '' }}>13:00 - 15:00</option>
+                            </select>
+                            @error('pickup_time')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -114,4 +144,33 @@
         </div>
     </div>
 </div>
+@endsection 
+
+@section('scripts')
+    @if(session('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: '{{ session('success') }}',
+            confirmButtonText: 'OK'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "{{ route('borrowings.index') }}";
+            }
+        });
+    </script>
+    
+    @endif
+
+    @if(session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: '{{ session('error') }}',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    @endif
 @endsection 

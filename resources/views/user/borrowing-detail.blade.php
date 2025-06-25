@@ -74,7 +74,7 @@
 
                         @if($borrowing->notes)
                             <div class="mb-3">
-                                <p class="text-muted mb-1">Catatan Admin</p>
+                                <p class="text-muted mb-1">Catatan</p>
                                 <p class="h5">{{ $borrowing->notes }}</p>
                             </div>
                         @endif

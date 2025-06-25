@@ -6,17 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
         Schema::table('borrowings', function (Blueprint $table) {
-            $table->integer('days_late')->default(0)->after('late_fee');
+            $table->time('pickup_time')->nullable()->after('due_date');
         });
     }
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
         Schema::table('borrowings', function (Blueprint $table) {
-            $table->dropColumn('days_late');
+            $table->dropColumn('pickup_time');
         });
     }
 };

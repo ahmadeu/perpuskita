@@ -88,7 +88,7 @@ class AksesController extends Controller
                 $query->where('category_id', request('category'));
             })
             ->latest()
-            ->paginate(12);
+            ->paginate(10);
             
         return view('user.dashboard', compact('books', 'categories'));
     }
@@ -108,7 +108,7 @@ class AksesController extends Controller
                 $query->where('category_id', request('category'));
             })
             ->latest()
-            ->paginate(12);
+            ->paginate(10);
             
         return view('guest.dashboard', compact('books', 'categories'));
     }

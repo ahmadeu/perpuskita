@@ -13,7 +13,7 @@
                 </div>
 
                 <div class="card-body">
-                    @if (session('success'))
+                    {{-- @if (session('success'))
                         <div class="alert alert-success" role="alert">
                             {{ session('success') }}
                         </div>
@@ -23,7 +23,16 @@
                         <div class="alert alert-danger" role="alert">
                             {{ session('error') }}
                         </div>
-                    @endif
+                    @endif --}}
+
+                    <div class="mb-3">
+                        <form method="GET" action="{{ route('categories.index') }}">
+                            <div class="input-group">
+                                <input type="text" name="search" class="form-control" placeholder="Cari nama atau kode kategori..." value="{{ request('search') }}">
+                                <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i> Cari</button>
+                            </div>
+                        </form>
+                    </div>
 
                     <div class="table-responsive">
                         <table class="table table-bordered">
@@ -49,10 +58,10 @@
                                             <a href="{{ route('categories.edit', $category) }}" class="btn btn-sm btn-warning">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            <form action="{{ route('categories.destroy', $category) }}" method="POST" class="d-inline">
+                                            <form action="{{ route('categories.destroy', $category) }}" method="POST" class="d-inline delete-form">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus kategori ini?')">
+                                                <button type="button" class="btn btn-sm btn-danger btn-delete">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
@@ -75,4 +84,9 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<x-js.modalConfirHapus />
+<x-js.modalSuccesError/>
 @endsection

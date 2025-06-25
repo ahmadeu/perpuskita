@@ -30,12 +30,14 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Buku</th>
+                                    <th>Judul Buku</th>
                                     <th>Tanggal Pengajuan</th>
                                     <th>Tanggal Pinjam</th>
                                     <th>Tanggal Kembali</th>
+                                    <th>Jam Pengambilan</th>
                                     <th>Status</th>
                                     <th>Catatan Admin</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -59,6 +61,17 @@
                                         <td>{{ $borrowing->borrow_date ? $borrowing->borrow_date->format('d/m/Y') : '-' }}</td>
                                         <td>{{ $borrowing->due_date ? $borrowing->due_date->format('d/m/Y') : '-' }}</td>
                                         <td>
+                                            @if($borrowing->pickup_time)
+                                                @php
+                                                    $timeStr = $borrowing->pickup_time->format('H:i');
+                                                    $slotLabel = $pickupSlots[$timeStr] ?? $timeStr;
+                                                @endphp
+                                                {{ $slotLabel }}
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
+                                        <td>
                                             @if($borrowing->status === 'pending')
                                                 <span class="badge bg-warning">Menunggu Persetujuan</span>
                                             @elseif($borrowing->status === 'approved')
@@ -74,10 +87,24 @@
                                             @endif
                                         </td>
                                         <td>{{ $borrowing->notes ?? '-' }}</td>
+                                        <td>
+                                            @if($borrowing->status === 'pending')
+                                                <form action="{{ route('borrowings.cancel', $borrowing) }}" method="POST" class="d-inline" 
+                                                      onsubmit="return confirm('Apakah Anda yakin ingin membatalkan peminjaman ini?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                        <i class="fas fa-times"></i> Batalkan
+                                                    </button>
+                                                </form>
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="text-center">Belum ada peminjaman</td>
+                                        <td colspan="9" class="text-center">Belum ada peminjaman</td>
                                     </tr>
                                 @endforelse
                             </tbody>

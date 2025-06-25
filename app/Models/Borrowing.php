@@ -16,6 +16,7 @@ class Borrowing extends Model
         'borrow_date',
         'due_date',
         'return_date',
+        'pickup_time',
         'status',
         'user_notes',
         'notes',
@@ -28,6 +29,7 @@ class Borrowing extends Model
         'borrow_date' => 'datetime',
         'due_date' => 'datetime',
         'return_date' => 'datetime',
+        'pickup_time' => 'datetime',
     ];
 
     public function user()

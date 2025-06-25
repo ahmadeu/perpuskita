@@ -52,6 +52,28 @@
                             @enderror
                         </div>
 
+                        <div class="mb-3">
+                            <label for="pickup_time" class="form-label">Pilih Jam Pengambilan <span class="text-danger">*</span></label>
+                            <select class="form-control @error('pickup_time') is-invalid @enderror" 
+                                    id="pickup_time" 
+                                    name="pickup_time" 
+                                    required>
+                                <option value="">Pilih jam pengambilan</option>
+                                @foreach($pickupSlots as $time => $label)
+                                    <option value="{{ $time }}" {{ old('pickup_time') == $time ? 'selected' : '' }}>
+                                        {{ $label }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('pickup_time')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="form-text text-muted">
+                                <i class="fas fa-clock"></i> 
+                                Pilih waktu yang sesuai untuk mengambil buku di perpustakaan
+                            </small>
+                        </div>
+
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle"></i> 
                             <strong>Informasi Peminjaman:</strong>

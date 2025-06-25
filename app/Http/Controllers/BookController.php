@@ -15,9 +15,23 @@ class BookController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $books = Book::with('category')->latest()->paginate(10);
+        $query = Book::with('category');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%$search%")
+                  ->orWhere('author', 'like', "%$search%")
+                  ->orWhere('isbn', 'like', "%$search%")
+                  ->orWhereHas('category', function($cat) use ($search) {
+                      $cat->where('name', 'like', "%$search%") ;
+                  });
+            });
+        }
+
+        $books = $query->latest()->paginate(10)->withQueryString();
         return view('admin.books.index', compact('books'));
     }
 
@@ -91,7 +105,7 @@ class BookController extends Controller
         $book = Book::create($validated);
             Log::info('Buku berhasil dibuat:', ['id' => $book->id]);
         
-            return redirect()->route('books.index')
+            return redirect()->route('books.create')
                 ->with('success', 'Buku berhasil ditambahkan');
         } catch (\Exception $e) {
             Log::error('Error saat membuat buku:', [
@@ -169,7 +183,7 @@ class BookController extends Controller
         $book->update($validated);
             Log::info('Buku berhasil diupdate:', ['id' => $book->id]);
         
-            return redirect()->route('books.index')
+            return redirect()->route('books.edit', $book->id)
                 ->with('success', 'Buku berhasil diperbarui');
         } catch (\Exception $e) {
             Log::error('Error saat mengupdate buku:', [

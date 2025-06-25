@@ -34,6 +34,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/user/borrowings/{borrowing}', [BorrowingController::class, 'show'])->name('user.borrowing.detail');
         Route::get('/user/books/{book}/borrow', [BorrowingController::class, 'create'])->name('user.borrowings.create');
         Route::post('/user/borrowings', [BorrowingController::class, 'store'])->name('user.borrowings.store');
+        Route::delete('/user/borrowings/{borrowing}/cancel', [BorrowingController::class, 'cancel'])->name('borrowings.cancel');
     });
 
     // Admin routes
@@ -44,6 +45,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('/admin/books', BookController::class);
         Route::resource('/admin/borrowings', BorrowingController::class);
         Route::post('borrowings/{borrowing}/return', [BorrowingController::class, 'return'])->name('borrowings.return');
+        Route::get('borrowings/print-all', [BorrowingController::class, 'printAll'])->name('borrowings.printAll');
     });
 });
 

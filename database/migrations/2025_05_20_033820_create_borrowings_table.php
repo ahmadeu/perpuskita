@@ -15,6 +15,7 @@ class CreateBorrowingsTable extends Migration
             $table->date('request_date');
             $table->date('borrow_date')->nullable();
             $table->date('due_date')->nullable();
+            $table->time('pickup_time')->nullable();
             $table->date('return_date')->nullable();
             $table->enum('status', ['pending', 'approved', 'borrowed', 'returned', 'rejected', 'overdue'])->default('pending');
             $table->text('notes')->nullable();

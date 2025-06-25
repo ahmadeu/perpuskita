@@ -13,7 +13,7 @@
                 </div>
 
                 <div class="card-body">
-                    @if (session('success'))
+                    {{-- @if (session('success'))
                         <div class="alert alert-success" role="alert">
                             {{ session('success') }}
                         </div>
@@ -23,7 +23,16 @@
                         <div class="alert alert-danger" role="alert">
                             {{ session('error') }}
                         </div>
-                    @endif
+                    @endif --}}
+
+                    <div class="mb-3">
+                        <form method="GET" action="{{ route('users.index') }}">
+                            <div class="input-group">
+                                <input type="text" name="search" class="form-control" placeholder="Cari nama, email, atau NIM..." value="{{ request('search') }}">
+                                <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i> Cari</button>
+                            </div>
+                        </form>
+                    </div>
 
                     <div class="table-responsive">
                         <table class="table table-bordered">
@@ -32,6 +41,7 @@
                                     <th>No</th>
                                     <th>Nama</th>
                                     <th>Email</th>
+                                    <th>NIM</th>
                                     <th>Role</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -42,15 +52,16 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
+                                        <td>{{ $user->nim ?: '-' }}</td>
                                         <td>{{ ucfirst($user->role) }}</td>
                                         <td>
                                             <a href="{{ route('users.edit', $user) }}" class="btn btn-sm btn-warning">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            <form action="{{ route('users.destroy', $user) }}" method="POST" class="d-inline">
+                                            <form action="{{ route('users.destroy', $user) }}" method="POST" class="d-inline delete-form">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus user ini?')">
+                                                <button type="button" class="btn btn-sm btn-danger btn-delete">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
@@ -58,7 +69,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="text-center">Tidak ada data user</td>
+                                        <td colspan="6" class="text-center">Tidak ada data user</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -73,4 +84,9 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<x-js.modalConfirHapus />
+<x-js.modalSuccesError/>
 @endsection 

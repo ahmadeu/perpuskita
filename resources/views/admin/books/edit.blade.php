@@ -10,11 +10,11 @@
                 </div>
 
                 <div class="card-body">
-                    @if (session('error'))
+                    {{-- @if (session('error'))
                         <div class="alert alert-danger" role="alert">
                             {{ session('error') }}
                         </div>
-                    @endif
+                    @endif --}}
 
                     <form action="{{ route('books.update', $book->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
@@ -126,4 +126,33 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+    @if(session('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: '{{ session('success') }}',
+            confirmButtonText: 'OK'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "{{ route('books.index') }}";
+            }
+        });
+    </script>
+    
+    @endif
+
+    @if(session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: '{{ session('error') }}',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    @endif
 @endsection 

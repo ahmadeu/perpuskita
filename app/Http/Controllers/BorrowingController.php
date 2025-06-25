@@ -11,12 +11,27 @@ use Illuminate\Support\Facades\Auth;
 
 class BorrowingController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $borrowings = Borrowing::with(['user', 'book'])
-            ->latest()
-            ->paginate(10);
-        return view('admin.borrowings.index', compact('borrowings'));
+        $query = Borrowing::with(['user', 'book']);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->whereHas('user', function($u) use ($search) {
+                        $u->where('name', 'like', "%$search%");
+                    })
+                  ->orWhereHas('book', function($b) use ($search) {
+                        $b->where('title', 'like', "%$search%") ;
+                    })
+                  ->orWhere('status', 'like', "%$search%") ;
+            });
+        }
+
+        $borrowings = $query->latest()->paginate(10)->withQueryString();
+        // Slot waktu untuk tampilan
+        $pickupSlots = $this->getPickupTimeSlots();
+        return view('admin.borrowings.index', compact('borrowings', 'pickupSlots'));
     }
 
     public function create(Book $book)
@@ -48,8 +63,33 @@ class BorrowingController extends Controller
             return redirect()->back()->with('error', 'Anda sudah mengajukan peminjaman buku ini sebelumnya.');
         }
 
+        // Slot waktu pengambilan yang tersedia
+        $pickupSlots = $this->getPickupTimeSlots();
+
         // Jika user biasa, tampilkan form biasa
-        return view('user.borrow-form', compact('book'));
+        return view('user.borrow-form', compact('book', 'pickupSlots'));
+    }
+
+    /**
+     * Mendapatkan slot waktu pengambilan yang tersedia
+     */
+    private function getPickupTimeSlots()
+    {
+        return [
+            '08:00' => '08:00 - 09:00',
+            '10:00' => '10:00 - 11:00',
+            '13:00' => '13:00 - 15:00'
+        ];
+    }
+
+    /**
+     * Mendapatkan label slot waktu berdasarkan waktu
+     */
+    private function getPickupTimeLabel($time)
+    {
+        $slots = $this->getPickupTimeSlots();
+        $timeStr = $time->format('H:i');
+        return $slots[$timeStr] ?? $timeStr;
     }
 
     public function store(Request $request)
@@ -74,6 +114,7 @@ class BorrowingController extends Controller
                     'user_id' => 'required|exists:users,id',
                     'borrow_date' => 'required|date',
                     'due_date' => 'required|date|after:borrow_date',
+                    'pickup_time' => 'required|in:08:00,10:00,13:00',
                     'notes' => 'nullable|string|max:500'
                 ]);
 
@@ -84,6 +125,7 @@ class BorrowingController extends Controller
                     'request_date' => now(),
                     'borrow_date' => $request->borrow_date,
                     'due_date' => $request->due_date,
+                    'pickup_time' => $request->pickup_time,
                     'notes' => $request->notes,
                     'status' => 'borrowed'
                 ]);
@@ -95,11 +137,12 @@ class BorrowingController extends Controller
                 $book->save();
 
                 Log::info('Peminjaman berhasil dibuat oleh admin', ['borrowing_id' => $borrowing->id]);
-                return redirect()->route('borrowings.index')->with('success', 'Peminjaman berhasil dibuat.');
+                return redirect()->route('borrowings.create')->with('success', 'Peminjaman berhasil dibuat.');
             } else {
                 // Validasi untuk user biasa
                 $request->validate([
                     'book_id' => 'required|exists:books,id',
+                    'pickup_time' => 'required|in:08:00,10:00,13:00',
                     'user_notes' => 'nullable|string|max:500'
                 ]);
 
@@ -130,6 +173,7 @@ class BorrowingController extends Controller
                     'user_id' => Auth::id(),
                     'book_id' => $request->book_id,
                     'request_date' => now(),
+                    'pickup_time' => $request->pickup_time,
                     'user_notes' => $request->user_notes,
                     'status' => 'pending'
                 ]);
@@ -160,27 +204,26 @@ class BorrowingController extends Controller
                 'borrow_date' => 'required|date',
                 'due_date' => 'required|date|after:borrow_date',
                 'return_date' => 'nullable|date|after:borrow_date',
+                'pickup_time' => 'required|in:08:00,10:00,13:00',
                 'status' => 'required|in:pending,approved,borrowed,returned,rejected,overdue',
                 'notes' => 'nullable|string'
             ]);
 
-            // Update status buku jika diperlukan
-            if ($validated['status'] === 'approved' || $validated['status'] === 'borrowed') {
-                $book = $borrowing->book;
-                $book->quantity = max(0, $book->quantity - 1);
-                if ($borrowing->status !== 'approved' && $borrowing->status !== 'borrowed') {
-                    $book->total_borrowed += 1;
-                }
-                $book->save();
-            } elseif ($validated['status'] === 'returned' || $validated['status'] === 'rejected') {
-                $book = $borrowing->book;
-                $book->quantity += 1;
-                $book->save();
-            }
-
             $borrowing->update($validated);
 
-            return redirect()->route('borrowings.index')
+            // Jika hari ini <= due_date, status otomatis menjadi 'borrowed' dan denda direset
+            if (
+                $borrowing->due_date &&
+                now()->lessThanOrEqualTo($borrowing->due_date) &&
+                $borrowing->status === 'overdue'
+            ) {
+                $borrowing->status = 'borrowed';
+                $borrowing->late_fee = 0;
+                $borrowing->days_late = 0;
+                $borrowing->save();
+            }
+
+            return redirect()->route('borrowings.edit', $borrowing->id)
                 ->with('success', 'Peminjaman berhasil diperbarui');
         } catch (\Exception $e) {
             Log::error('Error saat mengupdate peminjaman:', [
@@ -225,7 +268,10 @@ class BorrowingController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('user.borrowings', compact('borrowings'));
+        // Slot waktu untuk tampilan
+        $pickupSlots = $this->getPickupTimeSlots();
+
+        return view('user.borrowings', compact('borrowings', 'pickupSlots'));
     }
 
     public function show(Borrowing $borrowing)
@@ -266,5 +312,51 @@ class BorrowingController extends Controller
             ]);
             return back()->with('error', 'Terjadi kesalahan saat mengembalikan buku: ' . $e->getMessage());
         }
+    }
+
+    public function cancel(Borrowing $borrowing)
+    {
+        // Hanya user yang membuat peminjaman yang bisa membatalkan
+        if ($borrowing->user_id !== Auth::id()) {
+            return redirect()->back()->with('error', 'Anda tidak dapat membatalkan peminjaman orang lain.');
+        }
+
+        // Hanya peminjaman dengan status pending yang bisa dibatalkan
+        if ($borrowing->status !== 'pending') {
+            return redirect()->back()->with('error', 'Hanya peminjaman yang menunggu persetujuan yang dapat dibatalkan.');
+        }
+
+        try {
+            $borrowing->delete();
+            return redirect()->route('user.borrowings')->with('success', 'Peminjaman berhasil dibatalkan.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat membatalkan peminjaman.');
+        }
+    }
+
+    /**
+     * Print semua data peminjaman
+     */
+    public function printAll(Request $request)
+    {
+        $query = Borrowing::with(['user', 'book']);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->whereHas('user', function($u) use ($search) {
+                        $u->where('name', 'like', "%$search%");
+                    })
+                  ->orWhereHas('book', function($b) use ($search) {
+                        $b->where('title', 'like', "%$search%") ;
+                    })
+                  ->orWhere('status', 'like', "%$search%") ;
+            });
+        }
+
+        $borrowings = $query->latest()->get();
+        $pickupSlots = $this->getPickupTimeSlots();
+        
+        return view('admin.borrowings.print-all', compact('borrowings', 'pickupSlots'));
     }
 }

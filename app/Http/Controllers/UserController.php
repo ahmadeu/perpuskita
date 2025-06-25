@@ -5,12 +5,25 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::latest()->paginate(10);
+        $query = User::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                  ->orWhere('email', 'like', "%$search%")
+                  ->orWhere('nim', 'like', "%$search%")
+                  ->orWhere('role', 'like', "%$search%") ;
+            });
+        }
+
+        $users = $query->latest()->paginate(10)->withQueryString();
         return view('admin.users.index', compact('users'));
     }
 
@@ -26,21 +39,31 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-            'role' => 'required|in:admin,user'
-        ]);
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'nim' => 'nullable|string|max:20|unique:users',
+                'password' => 'required|string|min:8',
+                'role' => 'required|in:admin,user'
+            ]);
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => $request->role
-        ]);
+            User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'nim' => $request->nim,
+                'password' => Hash::make($request->password),
+                'role' => $request->role
+            ]);
 
-        return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan');
+            return redirect()->route('users.create')->with('success', 'User berhasil ditambahkan');
+        } catch (\Exception $e) {
+            Log::error('Error saat menambah user:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return back()->with('error', 'Terjadi kesalahan saat menambah user: ' . $e->getMessage());
+        }
     }
 
     public function edit(User $user)
@@ -53,10 +76,11 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'nim' => 'nullable|string|max:20|unique:users,nim,' . $user->id,
             'role' => 'required|in:admin,user'
         ]);
 
-        $user->update($request->only(['name', 'email', 'role']));
+        $user->update($request->only(['name', 'email', 'nim', 'role']));
 
         if ($request->filled('password')) {
             $request->validate([
@@ -65,7 +89,7 @@ class UserController extends Controller
             $user->update(['password' => Hash::make($request->password)]);
         }
 
-        return redirect()->route('users.index')->with('success', 'User berhasil diperbarui');
+        return redirect()->route('users.edit', $user->id)->with('success', 'User berhasil diperbarui');
     }
 
     public function destroy(User $user)

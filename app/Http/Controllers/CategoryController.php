@@ -8,9 +8,19 @@ use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::latest()->paginate(10);
+        $query = Category::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                  ->orWhere('code', 'like', "%$search%") ;
+            });
+        }
+
+        $categories = $query->latest()->paginate(10)->withQueryString();
         return view('admin.categories.index', compact('categories'));
     }
 
@@ -30,7 +40,7 @@ class CategoryController extends Controller
 
             Category::create($validated);
 
-            return redirect()->route('categories.index')
+            return redirect()->route('categories.create')
                 ->with('success', 'Kategori berhasil ditambahkan');
         } catch (\Exception $e) {
             Log::error('Error saat membuat kategori:', [
@@ -57,7 +67,7 @@ class CategoryController extends Controller
 
             $category->update($validated);
 
-            return redirect()->route('categories.index')
+            return redirect()->route('categories.edit', $category->id)
                 ->with('success', 'Kategori berhasil diperbarui');
         } catch (\Exception $e) {
             Log::error('Error saat mengupdate kategori:', [

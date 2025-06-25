@@ -29,6 +29,15 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="nim" class="form-label">NIM</label>
+                            <input type="text" class="form-control @error('nim') is-invalid @enderror" id="nim" name="nim" value="{{ old('nim', $user->nim) }}" placeholder="Masukkan NIM (opsional)">
+                            @error('nim')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="form-text text-muted">NIM hanya untuk user mahasiswa (opsional)</small>
+                        </div>
+
+                        <div class="mb-3">
                             <label for="password" class="form-label">Password (kosongkan jika tidak ingin mengubah)</label>
                             <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password">
                             @error('password')
@@ -58,4 +67,33 @@
         </div>
     </div>
 </div>
+@endsection 
+
+@section('scripts')
+    @if(session('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: '{{ session('success') }}',
+            confirmButtonText: 'OK'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "{{ route('users.index') }}";
+            }
+        });
+    </script>
+    
+    @endif
+
+    @if(session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: '{{ session('error') }}',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    @endif
 @endsection 

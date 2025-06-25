@@ -122,7 +122,7 @@
                     <form action="{{ route('login.post') }}" method="POST">
                         @csrf
                         <div class="mb-3">
-                            <label for="login" class="form-label">NIM atau Email</label>
+                            <label for="login" class="form-label" >NIM atau Email</label>
                             <input type="text" class="form-control @error('login') is-invalid @enderror" 
                                    id="login" name="login" value="{{ old('login') }}" 
                                    placeholder="Masukkan NIM atau Email" required>
