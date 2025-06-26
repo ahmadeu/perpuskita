@@ -89,11 +89,10 @@
                                         <td>{{ $borrowing->notes ?? '-' }}</td>
                                         <td>
                                             @if($borrowing->status === 'pending')
-                                                <form action="{{ route('borrowings.cancel', $borrowing) }}" method="POST" class="d-inline" 
-                                                      onsubmit="return confirm('Apakah Anda yakin ingin membatalkan peminjaman ini?')">
+                                                <form action="{{ route('borrowings.cancel', $borrowing) }}" method="POST" class="d-inline cancel-form">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                    <button type="button" class="btn btn-sm btn-outline-danger btn-cancel">
                                                         <i class="fas fa-times"></i> Batalkan
                                                     </button>
                                                 </form>
@@ -118,5 +117,14 @@
             </div>
         </div>
     </div>
+    <h6> *Note
+		<br> Masa peminjaman buku adalah <span class="text-danger fw-bold">7 hari</span> dari tanggal peminjaman.
+		<br> Jika buku dikembalikan lebih dari masa peminjaman, maka akan dikenakan <span class="text-danger fw-bold">denda</span>
+		<br> sebesar <span class="text-danger fw-bold">Rp 1.000/hari</span>.
+	</h6>
 </div>
 @endsection 
+@section('scripts')
+<x-js.modalSuccesError />
+<x-js.modalConfirBatalkanPeminjaman />
+@endsection
