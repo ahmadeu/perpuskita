@@ -174,7 +174,7 @@ class BorrowingController extends Controller
                     return redirect()->back()->with('error', 'Anda sudah mengajukan peminjaman buku ini sebelumnya.');
                 }
 
-                // Buat peminjaman baru untuk user biasa
+                // Buat peminjaman baru untuk user 
                 $borrowing = Borrowing::create([
                     'user_id' => Auth::id(),
                     'book_id' => $request->book_id,
