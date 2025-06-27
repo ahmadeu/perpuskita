@@ -44,7 +44,7 @@
                     "dev-master": "3.15-dev"
                 }
             },
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "files": [
                     "src/helpers.php"
