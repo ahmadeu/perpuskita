@@ -19,7 +19,7 @@ class BorrowingController extends Controller
             ->whereNull('return_date')
             ->update(['status' => 'overdue']);
 
-        $query = Borrowing::with(['user', 'book']);
+        $query = Borrowing::with(['user', 'book', 'admin']);
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -127,6 +127,7 @@ class BorrowingController extends Controller
                 // Buat peminjaman baru untuk admin
                 $borrowing = Borrowing::create([
                     'user_id' => $request->user_id,
+                    'admin_id' => Auth::id(),
                     'book_id' => $request->book_id,
                     'request_date' => now(),
                     'borrow_date' => $request->borrow_date,
@@ -215,6 +216,9 @@ class BorrowingController extends Controller
                 'notes' => 'nullable|string'
             ]);
 
+            // Tambahkan admin_id dari admin yang sedang login
+            $validated['admin_id'] = Auth::id();
+
             $borrowing->update($validated);
 
             // Jika hari ini <= due_date, status otomatis menjadi 'borrowed' dan denda direset
@@ -299,7 +303,8 @@ class BorrowingController extends Controller
             // Update status peminjaman
             $borrowing->update([
                 'status' => 'returned',
-                'return_date' => now()
+                'return_date' => now(),
+                'admin_id' => Auth::id()
             ]);
 
             // Kembalikan stok buku
@@ -343,7 +348,7 @@ class BorrowingController extends Controller
      */
     public function printAll(Request $request)
     {
-        $query = Borrowing::with(['user', 'book']);
+        $query = Borrowing::with(['user', 'book', 'admin']);
 
         if ($request->filled('search')) {
             $search = $request->search;

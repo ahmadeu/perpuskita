@@ -23,8 +23,23 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        // Array nama Indonesia yang umum
+        $indonesianNames = [
+            'Ahmad Rizki', 'Siti Nurhaliza', 'Budi Santoso', 'Dewi Sartika', 'Eko Prasetyo',
+            'Fatimah Azzahra', 'Gunawan Setiawan', 'Hesti Wulandari', 'Indra Kusuma', 'Joko Widodo',
+            'Kartika Sari', 'Lukman Hakim', 'Maya Indah', 'Nugroho Pratama', 'Oktavia Putri',
+            'Prabowo Subianto', 'Rina Marlina', 'Sugeng Riyadi', 'Tuti Handayani', 'Umar Said',
+            'Vina Safitri', 'Wahyu Nugroho', 'Yuni Safitri', 'Zainal Abidin', 'Aisyah Putri',
+            'Bambang Tri', 'Citra Dewi', 'Doni Kusuma', 'Eva Marlina', 'Fajar Ramadhan',
+            'Gita Purnama', 'Hendra Gunawan', 'Ika Safitri', 'Jaya Kusuma', 'Kartika Dewi',
+            'Lukman Nur', 'Mira Safitri', 'Nugraha Pratama', 'Oktaviana', 'Purnama Sari',
+            'Rizki Pratama', 'Sari Indah', 'Teguh Santoso', 'Umi Kulsum', 'Viktor Pratama',
+            'Wati Safitri', 'Yoga Pratama', 'Zahra Putri', 'Ahmad Fauzi', 'Beti Safitri',
+            'Candra Kusuma', 'Dewi Sartika', 'Eko Yulianto', 'Fitri Handayani', 'Gunawan Jaya'
+        ];
+
         return [
-            'name' => fake()->name(),
+            'name' => fake()->randomElement($indonesianNames),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),

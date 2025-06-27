@@ -42,18 +42,19 @@
                             <div class="mb-3">
                                 <label for="user_id" class="form-label">Pilih Peminjam</label>
                                 <select name="user_id" id="user_id"
-                                    class="form-control @error('user_id') is-invalid @enderror" required>
-                                    <option value="">Pilih Peminjam</option>
+                                    class="form-control select2 @error('user_id') is-invalid @enderror" required>
+                                    <option value="">Cari dan Pilih Peminjam...</option>
                                     @foreach ($users as $user)
                                         <option value="{{ $user->id }}"
                                             {{ old('user_id') == $user->id ? 'selected' : '' }}>
-                                            {{ $user->name }} ({{ $user->email }})
+                                            {{ $user->name }} - {{ $user->email }} @if($user->nim) (NIM: {{ $user->nim }}) @endif
                                         </option>
                                     @endforeach
                                 </select>
                                 @error('user_id')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+                                {{-- <small class="form-text text-muted">Ketik nama, email, atau NIM untuk mencari peminjam</small> --}}
                             </div>
 
                             <div class="mb-3">
@@ -132,4 +133,5 @@
 
 @section('scripts')
     <x-js.modalSuccesError />
+    <x-js.pluginSelect2UserBook />
 @endsection
