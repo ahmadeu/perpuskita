@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.welcome')
 
 @section('title', 'Perpustakaan UMKU')
 
@@ -80,7 +80,7 @@
         <p class="lead mb-5">Rumah bagi jiwa-jiwa yang haus akan pengetahuan. Di antara rak buku yang menjulang, tersembunyi untaian hikmah yang siap dipetik</p>
             <div class="mt-4">
                 <a href="{{ route('dashboard') }}" class="btn btn-primary btn-lg me-3">
-                    <i class="fas fa-sign-in-alt me-2"></i> Go To Dashboard
+                    <i class="fas fa-sign-in-alt me-2"></i> Go To Books
                 </a>
             </div>
             <div class="mt-4">
@@ -159,53 +159,8 @@
     </div>
 </section>
 
-<!-- Recent Books Section -->
-<section class="py-5">
-    <div class="container">
-        <h2 class="text-center mb-5">Recent Books</h2>
-        <div class="row g-4">
-            {{-- @foreach($recentBooks as $book)
-            <div class="col-md-4 col-lg-2">
-                <div class="card book-card">
-                    @if($book->cover_image)
-                        <img src="{{ asset('storage/' . $book->cover_image) }}" class="card-img-top book-cover" alt="{{ $book->title }}">
-                    @else
-                        <div class="card-img-top book-cover d-flex align-items-center justify-content-center bg-light">
-                            <i class="fas fa-book fa-3x text-muted"></i>
-                        </div>
-                    @endif
-                    <div class="card-body">
-                        <h5 class="card-title">{{ Str::limit($book->title, 20) }}</h5>
-                        <p class="card-text text-muted">{{ $book->author }}</p>
-                    </div>
-                </div>
-            </div>
-            @endforeach --}}
-        </div>
-    </div>
-</section>
-
-<!-- Categories Section -->
-<section class="py-5 bg-light">
-    <div class="container">
-        <h2 class="text-center mb-5">Book Categories</h2>
-        <div class="row g-4">
-            {{-- @foreach($categories as $category)
-            <div class="col-6 col-md-4 col-lg-3">
-                <div class="card feature-card h-100">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">{{ $category->name }}</h5>
-                        <p class="card-text text-muted">Code: {{ $category->code }}</p>
-                    </div>
-                </div>
-            </div>
-            @endforeach --}}
-        </div>
-    </div>
-</section>
-
 <!-- Testimonial Section -->
-<section class="testimonial">
+{{-- <section class="testimonial">
     <div class="container">
         <h2 class="text-center mb-5">What Our Users Say</h2>
         <div class="row justify-content-center">
@@ -216,8 +171,6 @@
                             <div class="card border-0 bg-transparent">
                                 <div class="card-body text-center">
                                     <p class="lead mb-4">"This system has transformed how we manage our school library. It's user-friendly and saves us so much time!"</p>
-                                    <h5 class="fw-bold">Sarah Johnson</h5>
-                                    <p class="text-muted">School Librarian</p>
                                 </div>
                             </div>
                         </div>
@@ -252,7 +205,7 @@
             </div>
         </div>
     </div>
-</section>
+</section> --}}
 
 <!-- CTA Section -->
 <section class="cta-section">
