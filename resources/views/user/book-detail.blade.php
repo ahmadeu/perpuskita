@@ -125,4 +125,16 @@
         text-align: justify;
     }
 </style>
+@endsection
+@section('scripts')
+@if (session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: '{{ session('error') }}',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    @endif
 @endsection 

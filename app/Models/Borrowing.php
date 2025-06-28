@@ -11,6 +11,7 @@ class Borrowing extends Model
 
     protected $fillable = [
         'user_id',
+        'admin_id',
         'book_id',
         'request_date',
         'borrow_date',
@@ -33,6 +34,11 @@ class Borrowing extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function admin()
+    {
+        return $this->belongsTo(User::class, 'admin_id');
     }
 
     public function book()

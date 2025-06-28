@@ -150,6 +150,7 @@
                 <th>No</th>
                 <th>Peminjam</th>
                 <th>Buku</th>
+                <th>Oleh</th>
                 <th>Tgl Pinjam</th>
                 <th>Tgl Kembali</th>
                 <th>Jam Ambil</th>
@@ -164,6 +165,7 @@
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $borrowing->user->name }}</td>
                     <td>{{ Str::limit($borrowing->book->title, 25) }}</td>
+                    <td>{{ $borrowing->admin ? 'Admin: ' . $borrowing->admin->name : '-' }}</td>
                     <td>{{ $borrowing->borrow_date ? $borrowing->borrow_date->format('d/m/Y') : '-' }}</td>
                     <td>{{ $borrowing->due_date ? $borrowing->due_date->format('d/m/Y') : '-' }}</td>
                     <td>
@@ -224,7 +226,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="9" style="text-align: center;">Tidak ada data peminjaman</td>
+                    <td colspan="10" style="text-align: center;">Tidak ada data peminjaman</td>
                 </tr>
             @endforelse
         </tbody>

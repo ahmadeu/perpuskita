@@ -49,9 +49,10 @@
                                     <th>No</th>
                                     <th>Peminjam</th>
                                     <th>Buku</th>
+                                    <th>Oleh</th>
                                     <th>Tanggal Pinjam</th>
                                     <th>Tanggal Kembali</th>
-                                        <th>Jam Pengambilan</th>
+                                    <th>Jam Pengambilan</th>
                                     <th>Status</th>
                                     <th>Catatan User</th>
                                     <th>Catatan Admin</th>
@@ -65,10 +66,11 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $borrowing->user->name }}</td>
                                         <td>{{ $borrowing->book->title }}</td>
-                                            <td>{{ $borrowing->borrow_date ? $borrowing->borrow_date->format('d/m/Y') : '-' }}
-                                            </td>
-                                            <td>{{ $borrowing->due_date ? $borrowing->due_date->format('d/m/Y') : '-' }}
-                                            </td>
+                                        <td>{{ $borrowing->admin ? 'Admin: ' . $borrowing->admin->name : '-' }}</td>
+                                        <td>{{ $borrowing->borrow_date ? $borrowing->borrow_date->format('d/m/Y') : '-' }}
+                                        </td>
+                                        <td>{{ $borrowing->due_date ? $borrowing->due_date->format('d/m/Y') : '-' }}
+                                        </td>
                                         <td>
                                                 @if ($borrowing->pickup_time)
                                                     @php
@@ -154,7 +156,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                            <td colspan="11" class="text-center">Tidak ada data peminjaman</td>
+                                            <td colspan="12" class="text-center">Tidak ada data peminjaman</td>
                                     </tr>
                                 @endforelse
                             </tbody>
