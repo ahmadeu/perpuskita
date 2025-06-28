@@ -18,7 +18,7 @@ class DashboardController extends Controller
     {
         $totalBooks = Book::count();
         $total = User::where('role', 'user')->count();
-        $totalCategories = Category::count();
+        // $totalCategories = Category::count();
         // $totalBorrows = Borrow::count();
         
         // $activeBorrows = Borrow::where('status', 'borrowed')->count();
@@ -36,8 +36,8 @@ class DashboardController extends Controller
                             ->take(5)
                             ->get();
 
-        $user = Auth::user(); // ✅ Pakai Auth::user() bukan auth()->user()
-        $lateReturnsCount = Borrowing::where('status', 'overdue')->count();
+        $user = Auth::user(); 
+        // $lateReturnsCount = Borrowing::where('status', 'overdue')->count();
 
         return view('admin.dashboard', compact(
             'totalBooks',
