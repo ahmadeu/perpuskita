@@ -45,7 +45,7 @@
 
         /* Button Styles */
         .btn-search {
-            background-color: #f59e0b;
+            background-color: #008000;
             border: none;
             color: white;
             padding: 0.75rem 1.5rem;
@@ -55,7 +55,7 @@
         }
 
         .btn-search:hover {
-            background-color: #d97706;
+            background-color: #006400;
         }
 
         /* Form Styles */
@@ -78,6 +78,25 @@
         footer p, footer li {
             font-size: 0.95rem;
         }
+        
+        /* Theme color changes */
+        .text-primary {
+            color: #008000 !important;
+        }
+        
+        .bg-primary {
+            background-color: #008000 !important;
+        }
+        
+        .btn-primary {
+            background-color: #008000 !important;
+            border-color: #008000 !important;
+        }
+        
+        .btn-primary:hover {
+            background-color: #006400 !important;
+            border-color: #006400 !important;
+        }
     </style>
 
     @yield('styles')
@@ -89,7 +108,8 @@
             <div class="container">
                 <!-- Brand -->
                 <a class="navbar-brand text-primary" href="#">
-                    <i class="fas fa-book-reader me-2"></i> Perpustakaan UMKU
+                    <img src="/images/lambangumku.png" alt="Logo" style="height: 28px; width: 28px; object-fit: contain; display: inline-block; vertical-align: middle; margin-right: 8px;">
+                    <span style="color: #008000; font-weight: 700;">Perpustakaan UMKU</span>
                 </a>
 
                 <!-- Toggle Button -->
@@ -229,6 +249,12 @@
                             <li><i class="fas fa-phone me-2"></i> (0291) 437218</li>
                             <li><i class="fas fa-envelope me-2"></i> info@umkulibrary.com</li>
                         </ul>
+                        <div class="mt-3">
+                            <div class="map-container" style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; border-radius: 10px; overflow: hidden; border: 2px solid rgba(255,255,255,0.3);">
+                                <iframe src="https://www.google.com/maps?q=Universitas+Muhammadiyah+Kudus,+Jl.+Ganesha+Raya+No.+1,+Kudus,+Jawa+Tengah&hl=id&z=17&output=embed" width="100%" height="100%" style="position:absolute;top:0;left:0;border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Lokasi Universitas Muhammadiyah Kudus"></iframe>
+                                <a href="https://www.google.com/maps/search/?api=1&query=Universitas+Muhammadiyah+Kudus,+Jl.+Ganesha+Raya+No.+1,+Kudus,+Jawa+Tengah" target="_blank" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:2;" title="Buka di Google Maps"></a>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <hr class="my-4">

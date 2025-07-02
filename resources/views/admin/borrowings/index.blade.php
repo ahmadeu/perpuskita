@@ -49,7 +49,7 @@
                                     <th>No</th>
                                     <th>Peminjam</th>
                                     <th>Buku</th>
-                                    <th>Oleh</th>
+                                    <th>Admin</th>
                                     <th>Tanggal Pinjam</th>
                                     <th>Tanggal Kembali</th>
                                     <th>Jam Pengambilan</th>

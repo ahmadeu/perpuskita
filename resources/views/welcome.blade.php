@@ -4,8 +4,16 @@
 
 @section('styles')
 <style>
+    body {
+        background: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('{{ asset('images/gedungumku.jpg') }}');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }
+    
     .hero-section {
-        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{{ asset('images/library.png') }}');
+        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{{ asset('images/gedungumku.jpg') }}');
         background-size: cover;
         background-position: center;
         color: #fff;
@@ -15,19 +23,27 @@
     
     .feature-card {
         transition: transform 0.3s ease;
-        border-radius: 10px;
+        border-radius: 15px;
         overflow: hidden;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     }
     
     .feature-card:hover {
         transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
     }
     
     .book-card {
         height: 100%;
         transition: all 0.3s ease;
-        border-radius: 10px;
+        border-radius: 15px;
         overflow: hidden;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
     }
     
     .book-card:hover {
@@ -41,33 +57,111 @@
     }
     
     .testimonial {
-        background-color: #f8f9fa;
+        background-color: rgba(248, 249, 250, 0.8);
+        backdrop-filter: blur(10px);
         padding: 80px 0;
     }
     
     .stat-item {
         text-align: center;
         padding: 30px 20px;
-        border-radius: 10px;
-        background-color: #fff;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        border-radius: 15px;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         transition: transform 0.3s ease;
     }
     
     .stat-item:hover {
         transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
     }
     
     .stat-icon {
         font-size: 3rem;
         margin-bottom: 15px;
-        color: #0d6efd;
+        color: #008000;
     }
     
     .cta-section {
-        background: linear-gradient(to right, #0d6efd, #0dcaf0);
+        background: linear-gradient(135deg, rgba(0, 128, 0, 0.9), rgba(0, 100, 0, 0.9));
+        backdrop-filter: blur(10px);
         padding: 80px 0;
         color: #fff;
+        border-radius: 20px;
+        margin: 20px 0;
+    }
+    
+    /* Custom button styling */
+    .btn-primary {
+        background-color: #008000 !important;
+        border-color: #008000 !important;
+        border: none;
+        border-radius: 25px;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 128, 0, 0.3);
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 128, 0, 0.4);
+        background-color: #006400 !important;
+        border-color: #006400 !important;
+    }
+    
+    .btn-light {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 25px;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        color: #008000;
+    }
+    
+    .btn-light:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 1);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Section styling */
+    .py-5 {
+        padding: 60px 0;
+    }
+    
+    .bg-light {
+        background: rgba(248, 249, 250, 0.8) !important;
+        backdrop-filter: blur(10px);
+    }
+    
+    /* Card styling improvements */
+    .card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .card-body {
+        padding: 2rem;
+    }
+    
+    /* Theme color changes */
+    .text-primary {
+        color: #008000 !important;
+    }
+    
+    .bg-primary {
+        background-color: #008000 !important;
+    }
+    
+    /* Icon color changes */
+    .fa-book, .fa-users, .fa-exchange-alt {
+        color: #008000 !important;
     }
 </style>
 @endsection
@@ -212,7 +306,7 @@
     <div class="container text-center">
         <h2 class="mb-4">Ready to streamline your library management?</h2>
         <p class="lead mb-5">Start managing your library efficiently with our comprehensive system</p>
-            <a href="{{ route('login') }}" class="btn btn-light btn-lg">Get Started Today</a>
+            <a href="{{ route('dashboard') }}" class="btn btn-light btn-lg">Get Started Today</a>
     </div>
 </section>
 @endsection
