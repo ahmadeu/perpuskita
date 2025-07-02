@@ -28,7 +28,7 @@
         }
 
         .login-header {
-            background: linear-gradient(to right, #0d6efd, #0dcaf0);
+            background: linear-gradient(to right, #008000, #006400);
             color: white;
             padding: 15px;
             border-radius: 15px 15px 0 0;
@@ -42,25 +42,26 @@
         .form-control {
             border-radius: 10px;
             padding: 10px;
-            border: 1px solid #ddd;
+            border: 1px solid #008000;
         }
 
         .form-control:focus {
-            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+            box-shadow: 0 0 0 0.2rem rgba(0, 128, 0, 0.25);
         }
 
         .btn-login {
-            background: linear-gradient(to right, #0d6efd, #0dcaf0);
+            background: linear-gradient(to right, #008000, #006400);
             border: none;
             border-radius: 10px;
             padding: 10px;
             font-weight: 600;
             width: 100%;
             margin-top: 15px;
+            color: #fff;
         }
 
         .btn-login:hover {
-            background: linear-gradient(to right, #0b5ed7, #0bb6d9);
+            background: linear-gradient(to right, #006400, #004d00);
         }
 
         .login-footer {
@@ -70,7 +71,7 @@
         }
 
         .login-footer a {
-            color: #0d6efd;
+            color: #008000;
             text-decoration: none;
         }
 
@@ -89,6 +90,16 @@
         .card-body {
             padding: 20px;
         }
+
+        .btn-green {
+            background: linear-gradient(90deg, #008000 0%, #006400 100%) !important;
+            color: #fff !important;
+            border: none !important;
+        }
+        .btn-green:hover {
+            background: linear-gradient(90deg, #006400 0%, #004d00 100%) !important;
+            color: #fff !important;
+        }
     </style>
 @endsection
 
@@ -97,7 +108,7 @@
         <div class="container">
             @if (request()->routeIs('login'))
                 <div class="mb-3">
-                    <a href="{{ route('welcome') }}" class="btn btn-primary">
+                    <a href="{{ route('welcome') }}" class="btn btn-primary btn-green">
                         <i class="fas fa-arrow-left me-2"></i>Kembali ke Dashboard
                     </a>
                 </div>
@@ -110,8 +121,8 @@
                             <img src="{{ asset('images/library.png') }}" alt="Logo" style="width: 80px;">
                         </div>
                         <div class="card-header text-center bg-gradient-primary">
-                            <h4 class="mb-0 login-title">Login Perpustakaan</h4>
-                            <small class="text-muted">Selamat datang, silakan login untuk melanjutkan</small>
+                            <h4 class="mb-0 login-title" style="color: #fff;">Login Perpustakaan</h4>
+                            <small class="text-muted" style="color: #fff !important;">Selamat datang, silakan login untuk melanjutkan</small>
                         </div>
                         <div class="card-body">
                             @if ($errors->any())
@@ -169,14 +180,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <style>
         .bg-gradient-primary {
-            background: linear-gradient(90deg, #0d6efd 0%, #0dcaf0 100%);
+            background: linear-gradient(90deg, #008000 0%, #006400 100%);
             color: #fff;
             border-radius: 15px 15px 0 0;
             padding: 20px 0 10px 0;
         }
 
         .btn-gradient-primary {
-            background: linear-gradient(90deg, #0d6efd 0%, #0dcaf0 100%);
+            background: linear-gradient(90deg, #008000 0%, #006400 100%);
             color: #fff;
             border: none;
             border-radius: 10px;
@@ -185,7 +196,7 @@
         }
 
         .btn-gradient-primary:hover {
-            background: linear-gradient(90deg, #0b5ed7 0%, #0bb6d9 100%);
+            background: linear-gradient(90deg, #006400 0%, #004d00 100%);
             color: #fff;
         }
     </style>
