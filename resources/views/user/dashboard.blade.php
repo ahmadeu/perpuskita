@@ -5,7 +5,7 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Koleksi Buku</h2>
         <form class="d-flex" method="GET" action="{{ route('user') }}">
-            <select name="category" class="form-select me-2" style="width: 200px;">
+            <select name="category" class="form-select me-2" style="width: 200px;" data-theme="green">
                 <option value="">Semua Kategori</option>
                 @foreach($categories as $category)
                     <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
@@ -14,7 +14,7 @@
                 @endforeach
             </select>
             <input type="text" name="search" class="form-control me-2" placeholder="Cari buku..." value="{{ request('search') }}">
-            <button type="submit" class="btn btn-outline-primary">Cari</button>
+            <button type="submit" class="btn btn-search">Cari</button>
         </form>
     </div>
 
@@ -75,7 +75,7 @@
     }
     
     .default-cover {
-        background: linear-gradient(135deg, #2c3e50, #3498db);
+        background: linear-gradient(135deg, #2c3e50, #008000);
         color: white;
         text-align: center;
         padding: 1rem;
@@ -98,6 +98,46 @@
     .form-select {
         border-radius: 0.375rem;
         border: 1px solid #ced4da;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .form-select:focus {
+        border-color: #008000;
+        box-shadow: 0 0 0 0.2rem rgba(0, 128, 0, 0.25);
+    }
+    
+    /* Dropdown options styling */
+    .form-select option:checked {
+        background-color: #008000;
+        color: white;
+    }
+    
+    .form-select option:hover {
+        background-color: #006400;
+        color: white;
+    }
+    
+    .form-select option:focus {
+        background-color: #008000;
+        color: white;
+    }
+    
+    .btn-search {
+        background-color: #008000;
+        border: 1px solid #008000;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-search:hover {
+        background-color: #006400;
+        border-color: #006400;
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 128, 0, 0.3);
     }
 
     @media (max-width: 768px) {

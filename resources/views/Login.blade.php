@@ -118,7 +118,7 @@
                 <div class="col-md-6">
                     <div class="card login-card animate__animated animate__fadeInDown">
                         <div class="text-center mb-3">
-                            <img src="{{ asset('images/library.png') }}" alt="Logo" style="width: 80px;">
+                            <img src="{{ asset('images/lambangumku.png') }}" alt="Logo" style="width: 80px;">
                         </div>
                         <div class="card-header text-center bg-gradient-primary">
                             <h4 class="mb-0 login-title" style="color: #fff;">Login Perpustakaan</h4>

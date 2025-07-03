@@ -29,7 +29,7 @@
                         <form method="GET" action="{{ route('categories.index') }}">
                             <div class="input-group">
                                 <input type="text" name="search" class="form-control" placeholder="Cari nama atau kode kategori..." value="{{ request('search') }}">
-                                <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i> Cari</button>
+                                <button class="btn btn-search" type="submit"><i class="fas fa-search"></i> Cari</button>
                             </div>
                         </form>
                     </div>
@@ -90,3 +90,23 @@
 <x-js.modalConfirHapus />
 <x-js.modalSuccesError/>
 @endsection
+
+<style>
+    .btn-search {
+        background-color: #008000;
+        border: 1px solid #008000;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-search:hover {
+        background-color: #006400;
+        border-color: #006400;
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 128, 0, 0.3);
+    }
+</style>

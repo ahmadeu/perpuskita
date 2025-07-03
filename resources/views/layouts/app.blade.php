@@ -97,6 +97,141 @@
             background-color: #006400 !important;
             border-color: #006400 !important;
         }
+        
+        .btn-outline-primary {
+            color: #008000 !important;
+            border-color: #008000 !important;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: #008000 !important;
+            border-color: #008000 !important;
+            color: white !important;
+        }
+        
+        .form-select:focus {
+            border-color: #008000 !important;
+            box-shadow: 0 0 0 0.2rem rgba(0, 128, 0, 0.25) !important;
+        }
+        
+        .form-control:focus {
+            border-color: #008000 !important;
+            box-shadow: 0 0 0 0.2rem rgba(0, 128, 0, 0.25) !important;
+        }
+        
+        /* Dropdown options styling */
+        .form-select option:checked {
+            background-color: #008000 !important;
+            color: white !important;
+        }
+        
+        .form-select option:hover {
+            background-color: #006400 !important;
+            color: white !important;
+        }
+        
+        /* Browser-specific styling for dropdown options */
+        .form-select option:checked,
+        .form-select option:hover,
+        .form-select option:focus {
+            background: linear-gradient(0deg, #008000 0%, #008000 100%) !important;
+            color: white !important;
+        }
+        
+        /* For Webkit browsers (Chrome, Safari, Edge) */
+        .form-select::-webkit-listbox {
+            background-color: white;
+        }
+        
+        .form-select::-webkit-option {
+            background-color: white;
+            color: #333;
+        }
+        
+        .form-select::-webkit-option:checked {
+            background-color: #008000 !important;
+            color: white !important;
+        }
+        
+        .form-select::-webkit-option:hover {
+            background-color: #006400 !important;
+            color: white !important;
+        }
+        
+        /* For Firefox */
+        .form-select option {
+            background-color: white;
+            color: #333;
+        }
+        
+        .form-select option:checked {
+            background-color: #008000 !important;
+            color: white !important;
+        }
+        
+        .form-select option:hover {
+            background-color: #006400 !important;
+            color: white !important;
+        }
+        
+        /* Select2 dropdown styling (if using Select2 plugin) */
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: #008000 !important;
+            color: white !important;
+        }
+        
+        .select2-container--default .select2-results__option[aria-selected=true] {
+            background-color: #e8f5e8 !important;
+            color: #008000 !important;
+        }
+        
+        .select2-container--default .select2-selection--single {
+            border-color: #ced4da !important;
+        }
+        
+        .select2-container--default.select2-container--focus .select2-selection--single {
+            border-color: #008000 !important;
+            box-shadow: 0 0 0 0.2rem rgba(0, 128, 0, 0.25) !important;
+        }
+
+        /* Enhanced Dropdown Options Styling */
+        .form-select {
+            --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23008000' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+        }
+        
+        /* Custom dropdown styling */
+        .form-select option {
+            background-color: white;
+            color: #333;
+            padding: 8px 12px;
+        }
+        
+        .form-select option:checked {
+            background-color: #008000 !important;
+            color: white !important;
+            font-weight: 600;
+        }
+        
+        .form-select option:hover {
+            background-color: #006400 !important;
+            color: white !important;
+        }
+        
+        .form-select option:focus {
+            background-color: #008000 !important;
+            color: white !important;
+        }
+        
+        /* Alternative approach using data attributes */
+        .form-select[data-theme="green"] option:checked {
+            background-color: #008000 !important;
+            color: white !important;
+        }
+        
+        /* For modern browsers that support :has() */
+        .form-select:has(option:checked) {
+            border-color: #008000;
+        }
     </style>
 
     @yield('styles')
@@ -258,20 +393,70 @@
                     </div>
                 </div>
                 <hr class="my-4">
-                <p>&copy; {{ date('Y') }} Perpustakaan UMKU. All rights reserved.</p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="mb-0">&copy; 2024 Perpustakaan UMKU. All rights reserved.</p>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <p class="mb-0">Powered by Laravel & Bootstrap</p>
+                    </div>
+                </div>
             </div>
         </footer>
         @endif
     </div>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="{{ asset('js/scripts.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Custom JavaScript for dropdown styling -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Style dropdown options with green theme
+            const selects = document.querySelectorAll('.form-select[data-theme="green"]');
+            
+            selects.forEach(select => {
+                // Add custom styling to options
+                const options = select.querySelectorAll('option');
+                options.forEach(option => {
+                    if (option.selected) {
+                        option.style.backgroundColor = '#008000';
+                        option.style.color = 'white';
+                        option.style.fontWeight = '600';
+                    }
+                });
+                
+                // Listen for change events
+                select.addEventListener('change', function() {
+                    const selectedOption = this.options[this.selectedIndex];
+                    if (selectedOption) {
+                        selectedOption.style.backgroundColor = '#008000';
+                        selectedOption.style.color = 'white';
+                        selectedOption.style.fontWeight = '600';
+                    }
+                });
+            });
+            
+            // Add hover effects for dropdown options
+            const style = document.createElement('style');
+            style.textContent = `
+                .form-select[data-theme="green"] option:hover {
+                    background-color: #006400 !important;
+                    color: white !important;
+                }
+                
+                .form-select[data-theme="green"] option:checked {
+                    background-color: #008000 !important;
+                    color: white !important;
+                    font-weight: 600;
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
 
-      <!-- Select2 CSS dan JS -->
-      <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-      <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     @yield('scripts')
 </body>
 </html>
