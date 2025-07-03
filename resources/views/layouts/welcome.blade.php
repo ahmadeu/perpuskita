@@ -130,7 +130,7 @@
                     </div>
                 </div>
                 <hr class="my-4">
-                <p>&copy; {{ date('Y') }} Perpustakaan UMKU. All rights reserved.</p>
+                <p class="mb-0">&copy; 2025 Perpustakaan UMKU. All rights reserved.</p>
             </div>
         </footer>
     </div>

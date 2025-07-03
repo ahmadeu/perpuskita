@@ -394,11 +394,8 @@
                 </div>
                 <hr class="my-4">
                 <div class="row">
-                    <div class="col-md-6">
-                        <p class="mb-0">&copy; 2024 Perpustakaan UMKU. All rights reserved.</p>
-                    </div>
-                    <div class="col-md-6 text-end">
-                        <p class="mb-0">Powered by Laravel & Bootstrap</p>
+                    <div class="col-md-12 text-center">
+                        <p class="mb-0">&copy; 2025 Perpustakaan UMKU. All rights reserved.</p>
                     </div>
                 </div>
             </div>
