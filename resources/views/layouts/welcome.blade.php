@@ -80,7 +80,19 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav me-auto"></ul>
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="informasiDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-info-circle"></i> Informasi
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="informasiDropdown">
+                                <li><a class="dropdown-item" href="{{ route('informasi.show', 'profil') }}">Profil</a></li>
+                                <li><a class="dropdown-item" href="{{ route('informasi.show', 'standar-pelayanan') }}">Standar Pelayanan</a></li>
+                                <li><a class="dropdown-item" href="{{ route('informasi.show', 'waktu-pelayanan') }}">Waktu Pelayanan</a></li>
+                                <li><a class="dropdown-item" href="{{ route('informasi.show', 'pustakawan') }}">Pustakawan</a></li>
+                            </ul>
+                        </li>
+                    </ul>
                     <ul class="navbar-nav">
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('login') }}">

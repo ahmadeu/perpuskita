@@ -255,6 +255,11 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <!-- Left Side -->
                     <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('informasi.editAll') }}">
+                                <i class="fas fa-info-circle"></i> Informasi
+                            </a>
+                        </li>
                         @auth
                             @if(auth()->user()->role === 'admin')
                                 <li class="nav-item">

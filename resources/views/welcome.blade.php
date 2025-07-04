@@ -239,43 +239,38 @@
     </div>
 </section>
 
-<!-- Features Section -->
+<!-- Features Section (REPLACED) -->
 <section class="py-5 bg-light">
     <div class="container">
-        <h2 class="text-center mb-5">Fitur</h2>
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="card h-100 feature-card">
-                    <div class="card-body text-center">
-                        <div class="mb-4">
-                            <i class="fas fa-book fa-3x text-primary"></i>
-                        </div>
-                        <h4 class="card-title">Manajemen Buku</h4>
-                        <p class="card-text">Easily add, update, and track all books in your library with detailed information.</p>
+        <h2 class="text-center mb-2" style="font-weight: 500; letter-spacing: 1px;">AYO BERGABUNG DENGAN <span style="color:#008000;">PERPUSTAKAAN</span><span style="color:#0073cf;">UMKU</span></h2>
+        <div class="text-center mb-5" style="font-size: 1.1rem; color: #222;">Keuntungan Menjadi Anggota Perpustakaan</div>
+        <div class="row text-center g-4">
+            <div class="col-md-3">
+                <div class="mb-3">
+                    <!-- Icon/illustration -->
+                    <div style="font-size:70px; color:#2196f3;">
+                        <img src="/images/icons8-internet-100.png" alt="akses koleksi" style="height:65px;">
                     </div>
                 </div>
+                <div style="font-weight:600;">Akses ke berbagai koleksi<br>menarik yang bisa dipinjam</div>
             </div>
-            <div class="col-md-4">
-                <div class="card h-100 feature-card">
-                    <div class="card-body text-center">
-                        <div class="mb-4">
-                            <i class="fas fa-users fa-3x text-primary"></i>
-                        </div>
-                        <h4 class="card-title">Informasi Anggota</h4>
-                        <p class="card-text">Manage library members with registration, profile updates, and membership tracking.</p>
-                    </div>
+            <div class="col-md-3">
+                <div class="mb-3">
+                    <img src="https://img.icons8.com/clouds/100/000000/conference-call.png" alt="komunitas aktif" style="height:90px;">
                 </div>
+                <div style="font-weight:600;">Mengenal dan berkontribusi<br>kemajuan dunia literasi</div>
             </div>
-            <div class="col-md-4">
-                <div class="card h-100 feature-card">
-                    <div class="card-body text-center">
-                        <div class="mb-4">
-                            <i class="fas fa-exchange-alt fa-3x text-primary"></i>
-                        </div>
-                        <h4 class="card-title">Sistem Peminjaman</h4>
-                        <p class="card-text">Handle book borrowing and returns with due date tracking and fine calculation.</p>
-                    </div>
+            <div class="col-md-3">
+                <div class="mb-3">
+                    <img src="https://img.icons8.com/clouds/100/000000/megaphone.png" alt="informasi menarik" style="height:90px;">
                 </div>
+                <div style="font-weight:600;">Dapatkan berbagai informasi<br>menarik</div>
+            </div>
+            <div class="col-md-3">
+                <div class="mb-3">
+                    <img src="https://img.icons8.com/clouds/100/000000/prize.png" alt="kegiatan menarik" style="height:90px;">
+                </div>
+                <div style="font-weight:600;">Mendapatkan pengalaman<br>meminjam buku lebih mudah<br>dan menyenangkan</div>
             </div>
         </div>
     </div>
