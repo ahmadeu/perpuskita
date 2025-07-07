@@ -73,13 +73,26 @@
         <nav class="navbar navbar-expand-xl navbar-light bg-white">
             <div class="container">
                 <a class="navbar-brand text-primary" href="#">
-                    <i class="fas fa-book-reader me-2"></i> Perpustakaan UMKU
+                    <img src="/images/lambangumku.png" alt="Logo" style="height: 28px; width: 28px; object-fit: contain; display: inline-block; vertical-align: middle; margin-right: 8px;">
+                    <span style="color: #28a745; font-weight: 700;">Perpustakaan UMKU</span>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav me-auto"></ul>
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="informasiDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-info-circle"></i> Informasi
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="informasiDropdown">
+                                <li><a class="dropdown-item" href="{{ route('informasi.show', 'profil') }}">Profil</a></li>
+                                <li><a class="dropdown-item" href="{{ route('informasi.show', 'standar-pelayanan') }}">Standar Pelayanan</a></li>
+                                <li><a class="dropdown-item" href="{{ route('informasi.show', 'waktu-pelayanan') }}">Waktu Pelayanan</a></li>
+                                <li><a class="dropdown-item" href="{{ route('informasi.show', 'pustakawan') }}">Pustakawan</a></li>
+                            </ul>
+                        </li>
+                    </ul>
                     <ul class="navbar-nav">
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('login') }}">
@@ -120,10 +133,16 @@
                             <li><i class="fas fa-phone me-2"></i> (0291) 437218</li>
                             <li><i class="fas fa-envelope me-2"></i> info@umkulibrary.com</li>
                         </ul>
+                        <div class="mt-3">
+                            <div class="map-container" style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; border-radius: 10px; overflow: hidden; border: 2px solid rgba(255,255,255,0.3);">
+                                <iframe src="https://www.google.com/maps?q=Universitas+Muhammadiyah+Kudus,+Jl.+Ganesha+Raya+No.+1,+Kudus,+Jawa+Tengah&hl=id&z=17&output=embed" width="100%" height="100%" style="position:absolute;top:0;left:0;border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Lokasi Universitas Muhammadiyah Kudus"></iframe>
+                                <a href="https://www.google.com/maps/search/?api=1&query=Universitas+Muhammadiyah+Kudus,+Jl.+Ganesha+Raya+No.+1,+Kudus,+Jawa+Tengah" target="_blank" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:2;" title="Buka di Google Maps"></a>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <hr class="my-4">
-                <p>&copy; {{ date('Y') }} Perpustakaan UMKU. All rights reserved.</p>
+                <p class="mb-0">&copy; 2025 Perpustakaan UMKU. All rights reserved.</p>
             </div>
         </footer>
     </div>
