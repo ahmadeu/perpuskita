@@ -86,10 +86,10 @@
                                 <i class="fas fa-info-circle"></i> Informasi
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="informasiDropdown">
-                                <li><a class="dropdown-item" href="{{ route('informasi.show', 'profil') }}">Profil</a></li>
-                                <li><a class="dropdown-item" href="{{ route('informasi.show', 'standar-pelayanan') }}">Standar Pelayanan</a></li>
-                                <li><a class="dropdown-item" href="{{ route('informasi.show', 'waktu-pelayanan') }}">Waktu Pelayanan</a></li>
-                                <li><a class="dropdown-item" href="{{ route('informasi.show', 'pustakawan') }}">Pustakawan</a></li>
+                                <li><a class="dropdown-item" href="{{ route('informasi.profil') }}">Profil</a></li>
+                                <li><a class="dropdown-item" href="{{ route('informasi.standarPelayanan') }}">Standar Pelayanan</a></li>
+                                <li><a class="dropdown-item" href="{{ route('informasi.waktuPelayanan') }}">Waktu Pelayanan</a></li>
+                                <li><a class="dropdown-item" href="{{ route('informasi.pustakawan') }}">Pustakawan</a></li>
                             </ul>
                         </li>
                     </ul>

@@ -329,7 +329,7 @@
     <div class="container text-center">
         <h2 class="mb-4">Ready to streamline your library management?</h2>
         <p class="lead mb-5">Start managing your library efficiently with our comprehensive system</p>
-            <a href="{{ route('dashboard') }}" class="btn btn-light btn-lg">Get Started Today</a>
+            <a href="{{ route('login') }}" class="btn btn-light btn-lg">Get Started Today</a>
     </div>
 </section>
 @endsection

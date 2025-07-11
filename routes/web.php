@@ -1,12 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\AksesController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\AksesController;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BorrowingController;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InformasiController;
 
@@ -48,16 +48,12 @@ Route::middleware(['auth'])->group(function () {
         Route::post('borrowings/{borrowing}/return', [BorrowingController::class, 'return'])->name('borrowings.return');
         Route::get('borrowings/print-all', [BorrowingController::class, 'printAll'])->name('borrowings.printAll');
     });
-
-    // CRUD informasi hanya untuk admin
-    Route::middleware(['auth', 'userAkses:admin'])->group(function () {
-        Route::resource('/admin/informasi', InformasiController::class)->except(['show']);
-        Route::get('/admin/informasi', [\App\Http\Controllers\InformasiController::class, 'editAll'])->name('informasi.editAll');
-        Route::post('/admin/informasi', [\App\Http\Controllers\InformasiController::class, 'updateAll'])->name('informasi.updateAll');
-    });
 });
 
 // Guest routes
-
 // Halaman informasi publik
-Route::get('/informasi/{slug}', [InformasiController::class, 'show'])->name('informasi.show');
+    Route::get('/informasi/profil', [InformasiController::class, 'profil'])->name('informasi.profil');
+    Route::get('/informasi/standar-pelayanan', [InformasiController::class, 'standarPelayanan'])->name('informasi.standarPelayanan');
+    Route::get('/informasi/waktu-pelayanan', [InformasiController::class, 'waktuPelayanan'])->name('informasi.waktuPelayanan');
+    Route::get('/informasi/pustakawan', [InformasiController::class, 'pustakawan'])->name('informasi.pustakawan');
+
